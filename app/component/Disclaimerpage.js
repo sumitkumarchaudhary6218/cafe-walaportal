@@ -12,7 +12,7 @@ const latestUpdates = [
   { id: 6, text: "UP BEd Online Form 2026 Notification, Eligibility & Last Date to Apply?", url: "/#" },
   { id: 7, text: "JEE Mains 2026 Session 2 Form 2026 : जेईई मेन्स 2026 सेशन 2 के लिए ऑनलाइन शुरू ऐसे करें आवेदन?", url: "/#" },
   { id: 8, text: "Tata Pankh Scholarship 2025-26 : टाटा दे रही है 10वीं, 12वीं के छात्रवृत्ति योजना शुरू, ऐसे करें आवेदन?", url: "/#" },
-  { id: 9, text: "Railway Group D Syllabus 2026 : Exam Pattern, PET Syllabus & Selection Process?", url: "/#" },
+  { id: 9, text: "Railway Group D Syllabus 2026 : Exam Pattern, PET Syllabus & Selection Process?", url: "https://www.rrbapply.gov.in/#/auth/landing" },
   { id: 10, text: "CTET Feb Admit Card 2026 Kaise Download Kare | How to Download Ctet admit card 2026?", url: "/#" },
   { id: 11, text: "CTET February 2026 City Intimation Slip 2026 Download Link (Out) – परीक्षा सिटी जरूरी, जाने कब होगी परीक्षा, Admit Card ऐसे करें उठानलोड?", url: "/#" },
   { id: 12, text: "Parimarjan Kaise kare – पुराना से पुराना जमीन को दुरस्त पर कैसे उठाएं", url: "/#" },
