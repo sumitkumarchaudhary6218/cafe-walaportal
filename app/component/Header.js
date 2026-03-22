@@ -1,6 +1,10 @@
 export default function Header() {
   return (
-    <header className="bg-red-500 py-3 px-3 md:py-4 md:px-4 border-b-2 border-yellow-400">
+    <header className="bg-red-500 py-3 px-3 md:py-4 md:px-4 border-b-2 border-yellow-400" 
+    style={{
+        background: "linear-gradient(135deg, #b91c1c 0%, #dc2626 40%, #991b1b 100%)"
+      }}
+    >
       <div className="max-w-5xl mx-auto flex items-center justify-center gap-2 md:gap-3">
         
         <div className="text-center">

@@ -1,9 +1,9 @@
 "use client";
+import { useState } from "react";
 import Disclaimer from "./component/Disclaimer";
 import DisclaimerPage from "./component/Disclaimerpage";
 import Marquee from "./component/Marquee";
-
-
+import Loader from "./component/Loader";
 
 const gridLinks = [
   {
@@ -25,28 +25,27 @@ const gridLinks = [
     text: "आधार DBT करें",
     href: "https://www.npci.org.in/",
     btn: "Apply Now",
-  }
-  ,
-    {
+  },
+  {
     text: "Aadhaar Operator Registration (आधार ऑपरेटर पंजीकरण)",
     href: "https://uidai.nseitexams.com/UIDAI/LoginAction_input.action",
     btn: "Register Now / अभी पंजीकरण करें",
   },
   {
     text: "LMS ID & Password Registration (LMS आईडी और पासवर्ड पंजीकरण)",
-    href: "https://e-learning.uidai.gov.in/login/index.php", 
+    href: "https://e-learning.uidai.gov.in/login/index.php",
     btn: "Register Now / अभी पंजीकरण करें",
   },
-   {
+  {
     text: "Pan Card Document Resize (पैन कार्ड डॉक्यूमेंट रिसाइज)",
-    href: "https://pancardresizer.com/", 
+    href: "https://pancardresizer.com/",
     btn: "Resize Now / अभी रिसाइज करें",
-  }, {
+  },
+  {
     text: "UTI Pan Card Download (UTI पैन कार्ड डाउनलोड)",
     href: "https://www.pan.utiitsl.com/PAN_ONLINE/ePANCardHome",
     btn: "Download Now / डाउनलोड करें",
-  }
-  ,
+  },
   {
     text: "फोटो रिसाइज सेवा (Photo Resize Service)",
     href: "https://image.pi7.org/",
@@ -126,36 +125,49 @@ const gridLinks = [
     text: "पुलिस सेवाएं (Police Services / FIR, Certificate)",
     href: "https://serviceonline.bihar.gov.in/renderApplicationForm.do?serviceId=12050016&UUID=714a9822-7089-4f86-9893-a2f83d3e3a67&directService=true&tempId=4236&grievDefined=0&serviceLinkRequired=No&userLoggedIn=N&source=CTZN&OWASP_CSRFTOKEN=9OWW-0Y48-ZTVU-Y302-RBV2-1AZ5-9UV6-BHRJ",
     btn: "Apply / Register / Check Status",
-  }
-
-
+  },
 ];
 
 export default function OnlineUpdateSTM() {
+
+  const [loading, setLoading] = useState(false);
   return (
+    <> 
     <div className="bg-amber-50 min-h-screen flex flex-col">
-      {/* Header and Navigation */}
-      
       <Marquee />
 
-      {/* Service Grid */}
-      <main className="max-w-6xl mx-auto px-4 py-8 flex-1">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded overflow-hidden shadow-lg">
-          {gridLinks.map((link, i) => (
-            <a
-              key={i}
-              href={link.href}
-              className="font-semibold text-white text-center text-xs sm:text-sm px-4 py-6 border border-gray-700 transition-all hover:bg-white hover:text-blue-600 hover:scale-[1.02] flex items-center justify-center bg-blue-600 rounded"
-            >
-              {link.text}
-            </a>
-          ))}
+      <main className="max-w-6xl mx-auto px-4 py-10 flex-1">
+        <div className="grid grid-cols-2 py-12 md:grid-cols-4 gap-4  overflow-hidden ">
+
+          {gridLinks.map((link, i) => {
+            const hue = (i * 137.5) % 360;
+            const bg = `hsl(${hue}, 65%, 45%)`;
+            const hoverBg = `hsl(${hue}, 65%, 35%)`;
+
+            return (
+              <a
+              onClick={()=>setLoading(true)}
+                key={i}
+                href={link.href}
+                style={{ backgroundColor: bg }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = hoverBg)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = bg)
+                }
+                className="font-semibold text-white text-center text-xs sm:text-sm px-4 py-6 border border-white/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl flex items-center justify-center rounded-xl shadow-md"              >
+                {link.text}
+              </a>
+            );
+          })}
         </div>
       </main>
 
-      {/* Disclaimer sections */}
       <DisclaimerPage />
       <Disclaimer />
     </div>
+    {loading && <Loader />}
+    </>
   );
 }
