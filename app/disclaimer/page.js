@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect, useRef } from "react";
 
 const paragraphs = [
@@ -6,55 +6,60 @@ const paragraphs = [
     id: 1,
     icon: "📋",
     label: "General Purpose",
-    text: "The information provided on Sevaupdates.com is published for general informational and educational purposes only. Our website shares updates related to government jobs, online forms, admit cards, results, government schemes, CSC services and other digital services to help users stay informed.",
+    text: "The information provided on Sevaupdates.com is published for general informational and educational purposes only...",
   },
   {
     id: 2,
     icon: "⚖️",
     label: "Accuracy & Liability",
-    text: "While we try our best to keep the information accurate, complete and updated, Sevaupdates.com does not guarantee the completeness, reliability or accuracy of any information available on this website. Any action you take upon the information found on this website is strictly at your own risk.",
+    text: "While we try our best to keep the information accurate...",
     accent: "warning",
   },
   {
     id: 3,
     icon: "🛡️",
     label: "No Responsibility",
-    text: "Sevaupdates.com will not be responsible for any loss, damage or inconvenience caused as a result of using the information available on this website.",
+    text: "Sevaupdates.com will not be responsible for any loss...",
     accent: "danger",
   },
   {
     id: 4,
     icon: "📰",
     label: "Sources of Information",
-    text: "All information published on this website is collected from various official websites, government notifications, newspapers and other reliable sources. However, users are strongly advised to verify the information from the official website of the respective department before making any decision or taking any action.",
+    text: "All information published on this website is collected...",
   },
   {
     id: 5,
     icon: "🏛️",
     label: "Not a Government Website",
-    text: "This website is not a government website and has no direct or indirect connection with any government department, ministry or organization.",
+    text: "This website is not a government website...",
     accent: "info",
   },
   {
     id: 6,
     icon: "✉️",
     label: "Report Incorrect Information",
-    text: "The content available on this website is only for reference and informational purposes. If you find any incorrect, outdated or inappropriate information on this website, please inform us through the Contact Us page, and we will try to correct it as soon as possible.",
+    text: "If you find any incorrect information...",
   },
 ];
 
 const accentMap = {
-  warning: { bar: "#e8a020", bg: "rgba(232,160,32,0.07)", border: "rgba(232,160,32,0.25)" },
-  danger:  { bar: "#d94040", bg: "rgba(217,64,64,0.06)",  border: "rgba(217,64,64,0.22)"  },
-  info:    { bar: "#2a6dd9", bg: "rgba(42,109,217,0.06)", border: "rgba(42,109,217,0.22)" },
-  default: { bar: "#c8a55a", bg: "rgba(200,165,90,0.05)", border: "rgba(200,165,90,0.18)" },
+  warning: "border-yellow-400/40 bg-yellow-400/10",
+  danger: "border-red-400/40 bg-red-400/10",
+  info: "border-blue-400/40 bg-blue-400/10",
+  default: "border-amber-500/30 bg-amber-500/10",
 };
 
 function useInView(ref) {
   const [inView, setInView] = useState(false);
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      ([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
       { threshold: 0.15 }
     );
     if (ref.current) obs.observe(ref.current);
@@ -71,53 +76,30 @@ function ParagraphCard({ item, index }) {
   return (
     <div
       ref={ref}
+      className={`flex rounded-xl border backdrop-blur-md shadow-sm transition-all duration-500 ${accent}`}
       style={{
-        display: "flex",
-        gap: "0",
-        borderRadius: "14px",
-        overflow: "hidden",
-        border: `1px solid ${accent.border}`,
-        background: accent.bg,
-        backdropFilter: "blur(10px)",
-        boxShadow: "0 2px 18px rgba(0,0,0,0.06)",
         opacity: inView ? 1 : 0,
         transform: inView ? "translateX(0)" : "translateX(-24px)",
-        transition: `opacity 0.55s ease ${index * 0.08}s, transform 0.55s ease ${index * 0.08}s`,
+        transitionDelay: `${index * 0.08}s`,
       }}
     >
       {/* Accent bar */}
-      <div style={{ width: "4px", background: accent.bar, flexShrink: 0 }} />
+      <div className="w-1 bg-amber-500" />
 
-      <div style={{ padding: "22px 26px", flex: 1 }}>
-        {/* Label row */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px"
-        }}>
-          <span style={{ fontSize: "18px", lineHeight: 1 }}>{item.icon}</span>
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "16px",
-            fontWeight: 700,
-            color: accent.bar,
-            letterSpacing: "0.3px",
-          }}>{item.label}</span>
-          <span style={{
-            marginLeft: "auto",
-            fontFamily: "monospace",
-            fontSize: "10px",
-            color: "rgba(100,90,70,0.4)",
-            letterSpacing: "1px",
-          }}>§ {String(item.id).padStart(2,"0")}</span>
+      <div className="p-6 flex-1">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-lg">{item.icon}</span>
+          <span className="font-semibold text-base text-amber-700">
+            {item.label}
+          </span>
+          <span className="ml-auto text-[10px] font-mono text-gray-400">
+            § {String(item.id).padStart(2, "0")}
+          </span>
         </div>
 
-        {/* Text */}
-        <p style={{
-          fontFamily: "'Lora', serif",
-          fontSize: "15px",
-          lineHeight: "1.85",
-          color: "#3a3020",
-          margin: 0,
-        }}>{item.text}</p>
+        <p className="text-sm leading-relaxed text-gray-700">
+          {item.text}
+        </p>
       </div>
     </div>
   );
@@ -125,229 +107,83 @@ function ParagraphCard({ item, index }) {
 
 export default function DisclaimerPage() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setTimeout(() => setMounted(true), 80); }, []);
+  useEffect(() => {
+    setTimeout(() => setMounted(true), 80);
+  }, []);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #eee8de; }
+    <div className="min-h-screen bg-gradient-to-br from-[#f5f0e8] via-[#ede5d6] to-[#e5dac8] px-5 py-12">
 
-        .dp-root {
-          min-height: 100vh;
-          background:
-            radial-gradient(ellipse 70% 50% at 90% 10%, rgba(200,165,90,0.13) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 10% 80%, rgba(42,109,217,0.07) 0%, transparent 60%),
-            linear-gradient(160deg, #f5f0e8 0%, #ede5d6 60%, #e5dac8 100%);
-          padding: 48px 20px 72px;
-          position: relative;
-        }
+      <div className="max-w-3xl mx-auto">
 
-        .dp-root::before {
-          content: '';
-          position: fixed; inset: 0;
-          background-image:
-            repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(180,150,80,0.06) 39px, rgba(180,150,80,0.06) 40px),
-            repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(180,150,80,0.04) 39px, rgba(180,150,80,0.04) 40px);
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        .dp-inner {
-          position: relative;
-          z-index: 1;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-
-        /* ---- Hero ---- */
-        .dp-hero {
-          text-align: center;
-          margin-bottom: 44px;
-          opacity: 0;
-          transform: translateY(-20px);
-          transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-        .dp-hero.show { opacity: 1; transform: translateY(0); }
-
-        .dp-eyebrow {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(200,165,90,0.15);
-          border: 1px solid rgba(200,165,90,0.35);
-          color: #a07a2a;
-          font-family: 'Lora', serif;
-          font-size: 11px;
-          font-style: italic;
-          letter-spacing: 2px;
-          padding: 6px 18px;
-          border-radius: 100px;
-          margin-bottom: 20px;
-          text-transform: uppercase;
-        }
-
-        .dp-headline {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(36px, 6vw, 58px);
-          font-weight: 700;
-          color: #1c1a14;
-          line-height: 1.1;
-          letter-spacing: -0.5px;
-          margin-bottom: 10px;
-        }
-
-        .dp-headline em {
-          color: #c8a55a;
-          font-style: italic;
-        }
-
-        .dp-tagline {
-          font-family: 'Lora', serif;
-          font-size: 15px;
-          color: #7a6e56;
-          font-style: italic;
-          letter-spacing: 0.2px;
-        }
-
-        /* ---- Ornament ---- */
-        .dp-ornament {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          margin: 0 0 36px;
-          opacity: 0;
-          transition: opacity 0.6s ease 0.3s;
-        }
-        .dp-ornament.show { opacity: 1; }
-        .dp-ornament-line {
-          flex: 1;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(200,165,90,0.5), rgba(200,165,90,0.5), transparent);
-        }
-        .dp-ornament-dot {
-          width: 6px; height: 6px;
-          border-radius: 50%;
-          background: #c8a55a;
-        }
-        .dp-ornament-diamond {
-          width: 8px; height: 8px;
-          background: #c8a55a;
-          transform: rotate(45deg);
-        }
-
-        /* ---- Cards ---- */
-        .dp-cards {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        /* ---- Footer note ---- */
-        .dp-foot {
-          margin-top: 44px;
-          text-align: center;
-          opacity: 0;
-          transition: opacity 0.6s ease 0.7s;
-        }
-        .dp-foot.show { opacity: 1; }
-
-        .dp-foot-inner {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-          background: rgba(28,26,20,0.88);
-          border: 1px solid rgba(200,165,90,0.3);
-          border-radius: 16px;
-          padding: 20px 32px;
-          backdrop-filter: blur(10px);
-        }
-
-        .dp-foot-brand {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 22px;
-          font-weight: 700;
-          color: #c8a55a;
-          letter-spacing: 1px;
-        }
-
-        .dp-foot-note {
-          font-family: 'Lora', serif;
-          font-size: 12px;
-          color: rgba(255,255,255,0.45);
-          font-style: italic;
-          letter-spacing: 0.5px;
-        }
-
-        .dp-foot-badges {
-          display: flex;
-          gap: 10px;
-          margin-top: 4px;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-
-        .dp-badge {
-          font-family: 'Lora', serif;
-          font-size: 10px;
-          color: rgba(200,165,90,0.75);
-          border: 1px solid rgba(200,165,90,0.25);
-          border-radius: 100px;
-          padding: 3px 10px;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-        }
-
-        @media (max-width: 560px) {
-          .dp-root { padding: 32px 14px 56px; }
-        }
-      `}</style>
-
-      <div className="dp-root">
-        <div className="dp-inner">
-
-          {/* Hero */}
-          <header className={`dp-hero ${mounted ? "show" : ""}`}>
-            <div className="dp-eyebrow">Legal Notice · Sevaupdates.com</div>
-            <h1 className="dp-headline">
-              Disclaimer &amp; <em>Liability</em>
-            </h1>
-            <p className="dp-tagline">Please read carefully before using this website</p>
-          </header>
-
-          {/* Ornament */}
-          <div className={`dp-ornament ${mounted ? "show" : ""}`}>
-            <div className="dp-ornament-line" />
-            <div className="dp-ornament-dot" />
-            <div className="dp-ornament-diamond" />
-            <div className="dp-ornament-dot" />
-            <div className="dp-ornament-line" />
+        {/* Hero */}
+        <header
+          className={`text-center mb-10 transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"
+          }`}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-amber-400/40 bg-amber-400/20 text-amber-700 text-xs italic tracking-widest mb-4">
+            Legal Notice · Sevaupdates.com
           </div>
 
-          {/* Cards */}
-          <div className="dp-cards">
-            {paragraphs.map((item, i) => (
-              <ParagraphCard key={item.id} item={item} index={i} />
-            ))}
-          </div>
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900">
+            Disclaimer & <span className="text-amber-600 italic">Liability</span>
+          </h1>
 
-          {/* Footer */}
-          <div className={`dp-foot ${mounted ? "show" : ""}`}>
-            <div className="dp-foot-inner">
-              <div className="dp-foot-brand">Sevaupdates.com</div>
-              <div className="dp-foot-note">Private Digital Information Portal · Not a Government Website</div>
-              <div className="dp-foot-badges">
-                <span className="dp-badge">Informational Only</span>
-                <span className="dp-badge">No Official Affiliation</span>
-                <span className="dp-badge">Verify Before Acting</span>
-              </div>
+          <p className="text-sm text-gray-500 italic mt-2">
+            Please read carefully before using this website
+          </p>
+        </header>
+
+        {/* Divider */}
+        <div
+          className={`flex items-center gap-3 mb-8 transition-opacity duration-700 ${
+            mounted ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+          <div className="w-2 h-2 bg-amber-500 rounded-full" />
+          <div className="w-2 h-2 bg-amber-500 rotate-45" />
+          <div className="w-2 h-2 bg-amber-500 rounded-full" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+        </div>
+
+        {/* Cards */}
+        <div className="flex flex-col gap-4">
+          {paragraphs.map((item, i) => (
+            <ParagraphCard key={item.id} item={item} index={i} />
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div
+          className={`mt-10 text-center transition-opacity duration-700 ${
+            mounted ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="inline-flex flex-col items-center gap-2 bg-black/80 border border-amber-400/40 rounded-xl px-8 py-5 backdrop-blur-md">
+            <div className="text-amber-500 font-serif text-xl font-bold">
+              Sevaupdates.com
+            </div>
+            <div className="text-xs text-gray-400 italic">
+              Private Digital Information Portal · Not a Government Website
+            </div>
+
+            <div className="flex gap-2 flex-wrap justify-center mt-1">
+              <span className="text-[10px] px-2 py-1 border border-amber-400/30 rounded-full text-amber-400 uppercase">
+                Informational Only
+              </span>
+              <span className="text-[10px] px-2 py-1 border border-amber-400/30 rounded-full text-amber-400 uppercase">
+                No Official Affiliation
+              </span>
+              <span className="text-[10px] px-2 py-1 border border-amber-400/30 rounded-full text-amber-400 uppercase">
+                Verify Before Acting
+              </span>
             </div>
           </div>
-
         </div>
+
       </div>
-    </>
+    </div>
   );
 }

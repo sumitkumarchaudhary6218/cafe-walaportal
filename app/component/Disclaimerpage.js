@@ -4,7 +4,7 @@ import { useState } from "react";
 
 // Latest Updates
 const latestUpdates = [
-  { id: 1, text: "Bihar Police Exam Calendar 2026 : How to Check Constable, Driver, Forest Guard Exam & PET Dates?", url: "/#" },
+  { id: 1, text: "📢 PAN Users Alert 🚨 | 1 April 2026 se New Rule लागू 😱 Aadhaar Ab DOB Proof Nahi ❌ PAN Reject Pakka!", url: "/panAlert" },
   { id: 2, text: "Bihar Udyami Yojana Project List 2025-26 Download – बिहार सरकार ने उद्यमी योजना के तहत किस रोजगार पर कितना पैसा मिलेगी प्रोजेक्ट लिस्ट हुआ जारी?", url: "/#" },
   { id: 3, text: "BSSC Exam Calendar 2026 Out | Bihar SSC Inter Level, CGL-4, BSO, Parichari Exam Date Out", url: "/bssc-exam-calendar-2026" },
   { id: 4, text: "NCET Integrated B.ed Form 2026 : Apply for 4-Year ITEP (B.A+B.Ed./B.Sc.+B.Ed./B.Com.+B.Ed.), Check Dates, Eligibility, Fee", url: "/#" },
