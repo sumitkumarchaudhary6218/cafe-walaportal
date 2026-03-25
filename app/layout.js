@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "./component/Footer";
-import ScrollToTopButton from "./component/ScrollToTopButton0";
+
 import Header from "./component/Header";
-import SocialButtons from "./component/SocialButtons";
+import Footer from "./component/Footer";
+import WrapperLayout from "./component/WrapperLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +26,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        
         <Header />
-        <SocialButtons />
 
-        <main>{children}</main>
-        <ScrollToTopButton />
+        {/* ✅ Client wrapper handles dynamic components */}
+        <WrapperLayout>
+          <main>{children}</main>
+        </WrapperLayout>
+
         <Footer />
+
       </body>
     </html>
   );
