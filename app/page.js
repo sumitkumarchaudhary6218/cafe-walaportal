@@ -7,6 +7,11 @@ import Loader from "./component/Loader";
 
 const gridLinks = [
   {
+    text: "Ramnagar",
+    href: "/batting/randomnumbertimer",
+    btn: "Play Now / अभी खेलें",
+  },
+  {
     text: "Online Gaming / Betting Platform",
     href: "/batting",
     btn: "Play Now / अभी खेलें",
