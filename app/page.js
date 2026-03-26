@@ -7,6 +7,11 @@ import Loader from "./component/Loader";
 
 const gridLinks = [
   {
+    text: "Online Gaming / Betting Platform",
+    href: "/batting",
+    btn: "Play Now / अभी खेलें",
+  },
+  {
     text: "CSC रजिस्ट्रेशन (CSC Registration / Digital Seva)",
     href: "https://cscregister.csccloud.in/",
     btn: "Register Now / अभी रजिस्टर करें",
@@ -132,42 +137,42 @@ export default function OnlineUpdateSTM() {
 
   const [loading, setLoading] = useState(false);
   return (
-    <> 
-    <div className="bg-amber-50 min-h-screen flex flex-col">
-      <Marquee />
+    <>
+      <div className="bg-amber-50 min-h-screen flex flex-col">
+        <Marquee />
 
-      <main className="max-w-6xl mx-auto px-4 py-10 flex-1">
-        <div className="grid grid-cols-2 py-12 md:grid-cols-4 gap-4  overflow-hidden ">
+        <main className="max-w-6xl mx-auto px-4 py-10 flex-1">
+          <div className="grid grid-cols-2 py-12 md:grid-cols-4 gap-4  overflow-hidden ">
 
-          {gridLinks.map((link, i) => {
-            const hue = (i * 137.5) % 360;
-            const bg = `hsl(${hue}, 65%, 45%)`;
-            const hoverBg = `hsl(${hue}, 65%, 35%)`;
+            {gridLinks.map((link, i) => {
+              const hue = (i * 137.5) % 360;
+              const bg = `hsl(${hue}, 65%, 45%)`;
+              const hoverBg = `hsl(${hue}, 65%, 35%)`;
 
-            return (
-              <a
-              onClick={()=>setLoading(true)}
-                key={i}
-                href={link.href}
-                style={{ backgroundColor: bg }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = hoverBg)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = bg)
-                }
-                className="font-semibold text-white text-center text-xs sm:text-sm px-4 py-6 border border-white/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl flex items-center justify-center rounded-xl shadow-md"              >
-                {link.text}
-              </a>
-            );
-          })}
-        </div>
-      </main>
+              return (
+                <a
+                  onClick={() => setLoading(true)}
+                  key={i}
+                  href={link.href}
+                  style={{ backgroundColor: bg }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = hoverBg)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = bg)
+                  }
+                  className="font-semibold text-white text-center text-xs sm:text-sm px-4 py-6 border border-white/20 transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl flex items-center justify-center rounded-xl shadow-md"              >
+                  {link.text}
+                </a>
+              );
+            })}
+          </div>
+        </main>
 
-      <DisclaimerPage />
-      <Disclaimer />
-    </div>
-    {loading && <Loader />}
+        <DisclaimerPage />
+        <Disclaimer />
+      </div>
+      {loading && <Loader />}
     </>
   );
 }
