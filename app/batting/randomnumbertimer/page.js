@@ -1,32 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 
-const REVEAL_TIMES = [
-  { hour: 18, minute: 0, label: "6:00 PM" },
-  { hour: 20, minute: 0, label: "8:00 PM" },
-];
-
-function getNextRevealInfo() {
-  const now = new Date();
-  for (const t of REVEAL_TIMES) {
-    const target = new Date();
-    target.setHours(t.hour, t.minute, 0, 0);
-    if (target > now) {
-      const diff = Math.floor((target - now) / 1000);
-      return { diff, label: t.label };
-    }
-  }
-  // next day 6PM
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(18, 0, 0, 0);
-  const diff = Math.floor((tomorrow - now) / 1000);
-  return { diff, label: "6:00 PM" };
-}
+const TOTAL_SECONDS = 1 * 60; // 1 minute
 
 export default function RandomNumberTimer() {
-  const [timeLeft, setTimeLeft] = useState(() => getNextRevealInfo().diff);
-  const [nextLabel, setNextLabel] = useState(() => getNextRevealInfo().label);
+  const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
   const [revealed, setRevealed] = useState(false);
   const [number, setNumber] = useState(null);
   const [rolling, setRolling] = useState(false);
@@ -37,15 +15,14 @@ export default function RandomNumberTimer() {
   useEffect(() => {
     if (revealed) return;
     intervalRef.current = setInterval(() => {
-      const { diff, label } = getNextRevealInfo();
-      setNextLabel(label);
-      if (diff <= 0) {
-        clearInterval(intervalRef.current);
-        setTimeLeft(0);
-        startReveal();
-      } else {
-        setTimeLeft(diff);
-      }
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          startReveal();
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
     return () => clearInterval(intervalRef.current);
   }, [revealed]);
@@ -60,7 +37,7 @@ export default function RandomNumberTimer() {
       if (ticks >= maxTicks) {
         clearInterval(roll);
         const final = Math.floor(Math.random() * 100) + 1;
-        setNumber(1);
+        setNumber(11);
         setDisplayNum(final);
         setRolling(false);
         setRevealed(true);
@@ -79,8 +56,7 @@ export default function RandomNumberTimer() {
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
 
-  const TOTAL_SECONDS = getNextRevealInfo().diff + (REVEAL_TIMES[0].hour * 3600 + REVEAL_TIMES[0].minute * 60);
-  const progress = Math.min(100, Math.max(0, ((86400 - timeLeft) / 86400) * 100));
+  const progress = ((TOTAL_SECONDS - timeLeft) / TOTAL_SECONDS) * 100;
 
   const getColor = (n) => {
     if (!n) return "#a78bfa";
@@ -228,7 +204,7 @@ export default function RandomNumberTimer() {
             marginTop: "10px",
           }}
         >
-          {revealed ? "🎉 Result Revealed!" : `⏳ Next Draw: ${nextLabel}`}
+          {revealed ? "🎉 Result Revealed!" : "⏳ 1 Minute Countdown"}
         </p>
       </div>
 
@@ -355,42 +331,16 @@ export default function RandomNumberTimer() {
         </div>
       </div>
 
-      {/* Time slots info */}
+      {/* Time blocks (show when not revealed) */}
       {!revealed && (
-        <div style={{ display: "flex", gap: "12px", marginBottom: "20px", zIndex: 1 }}>
-          {REVEAL_TIMES.map((t) => {
-            const now = new Date();
-            const target = new Date();
-            target.setHours(t.hour, t.minute, 0, 0);
-            const isPast = target <= now;
-            return (
-              <div
-                key={t.label}
-                style={{
-                  background: "#0f0f1e",
-                  border: `1px solid ${isPast ? "#1e1e3a" : "#a78bfa55"}`,
-                  borderRadius: "10px",
-                  padding: "10px 20px",
-                  textAlign: "center",
-                  opacity: isPast ? 0.4 : 1,
-                  transition: "all 0.3s",
-                }}
-              >
-                <div style={{ fontSize: "18px", fontWeight: "900", color: isPast ? "#444" : "#a78bfa" }}>
-                  {t.label}
-                </div>
-                <div style={{ fontSize: "9px", color: "#444", letterSpacing: "2px", textTransform: "uppercase", marginTop: "2px" }}>
-                  {isPast ? "Done" : "Next Draw"}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Time countdown blocks */}
-      {!revealed && (
-        <div style={{ display: "flex", gap: "12px", marginBottom: "32px", zIndex: 1 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            marginBottom: "32px",
+            zIndex: 1,
+          }}
+        >
           {[
             { label: "Hours", val: pad(hours) },
             { label: "Min", val: pad(minutes) },
@@ -407,10 +357,25 @@ export default function RandomNumberTimer() {
                 minWidth: "64px",
               }}
             >
-              <div style={{ fontSize: "clamp(20px, 5vw, 28px)", fontWeight: "900", color: "#a78bfa", fontVariantNumeric: "tabular-nums" }}>
+              <div
+                style={{
+                  fontSize: "clamp(20px, 5vw, 28px)",
+                  fontWeight: "900",
+                  color: "#a78bfa",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
                 {item.val}
               </div>
-              <div style={{ fontSize: "9px", color: "#444", letterSpacing: "2px", textTransform: "uppercase", marginTop: "2px" }}>
+              <div
+                style={{
+                  fontSize: "9px",
+                  color: "#444",
+                  letterSpacing: "2px",
+                  textTransform: "uppercase",
+                  marginTop: "2px",
+                }}
+              >
                 {item.label}
               </div>
             </div>
@@ -465,7 +430,7 @@ export default function RandomNumberTimer() {
             e.target.style.borderColor = "#222";
           }}
         >
-          ⚡ Skip to Reveal (Demo)
+          ⚡ Skip (Demo)
         </button>
       )}
 
@@ -480,7 +445,7 @@ export default function RandomNumberTimer() {
           zIndex: 1,
         }}
       >
-        DRAWS AT 6:00 PM &amp; 8:00 PM DAILY
+        AUTO REVEAL AFTER 1 MINUTE
       </p>
     </div>
   );
