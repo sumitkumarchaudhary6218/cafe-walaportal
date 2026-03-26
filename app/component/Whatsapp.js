@@ -7,7 +7,7 @@ const socialLinks = [
     icon: <FaWhatsapp />, 
     color: "bg-green-600 hover:bg-green-700", 
     border: "border-green-700",
-    href: "https://whatsapp.com/channel/0029VafJ8IOCXC3KtwtNqE1P"
+    href: "#"
   },
  
 ];
