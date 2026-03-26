@@ -94,7 +94,7 @@ export const tabledata = {
       { id: 509, name: "Mohammed Shami", role: "Bowler", runs: 0, wickets: 0 },
       { id: 510, name: "Spencer Johnson", role: "Bowler", runs: 0, wickets: 0 },
       { id: 511, name: "Joshua Little", role: "Bowler", runs: 0, wickets: 0 },
-      { id: 512, name: "Abhinav Manohar", role: "Batsman", runs: 22, wickets: 0 },
+      { id: 512, name: "Abhinav Manohar", role: "Batsman", runs: 0, wickets: 0 },
       { id: 513, name: "Sai Kishore", role: "Bowler", runs: 0, wickets: 0 },
       { id: 514, name: "Darshan Nalkande", role: "Bowler", runs: 0, wickets: 0 },
       { id: 515, name: "Jayant Yadav", role: "All-rounder", runs: 0, wickets: 0 }
