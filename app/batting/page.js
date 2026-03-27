@@ -1,7 +1,8 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import Whatsapp from "../component/Whatsapp";
+
 import { matchesList, tabledata } from "../component/matchesData";
+import FloatingWhatsapp from "../component/FloatingWhatsapp";
 
 const roleColors = {
   Batsman: "bg-blue-100 text-blue-700",
@@ -81,7 +82,7 @@ export default function CricketMatch() {
               <p className="text-green-600 text-[10px] font-bold tracking-widest uppercase">IPL  2026</p>
             </div>
           </div>
-          <Whatsapp />
+          <FloatingWhatsapp></FloatingWhatsapp>
         </div>
 
 
