@@ -4,7 +4,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 export default function FloatingWhatsapp() {
   const phoneNumber = "917324892379"; // 👈 apna number (91 + number)
-  const message = "Hello bhai mujhe info chahiye"; // 👈 optional message
+  const message = "Hello bhai mujhe bating khelna hai"; // 👈 optional message
 
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

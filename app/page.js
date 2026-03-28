@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Disclaimer from "./component/Disclaimer";
 import DisclaimerPage from "./component/Disclaimerpage";
 import Marquee from "./component/Marquee";
@@ -141,6 +141,9 @@ const gridLinks = [
 export default function OnlineUpdateSTM() {
 
   const [loading, setLoading] = useState(false);
+  useEffect(()=>{
+    setLoading(false)
+  },[])
   return (
     <>
       <div className="bg-amber-50 min-h-screen flex flex-col">
