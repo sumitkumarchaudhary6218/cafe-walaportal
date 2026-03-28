@@ -141,9 +141,17 @@ const gridLinks = [
 export default function OnlineUpdateSTM() {
 
   const [loading, setLoading] = useState(false);
-  useEffect(()=>{
-    setLoading(false)
-  },[])
+  useEffect(() => {
+    const handleVisibility = () => {
+      setLoading(false);
+    };
+
+    window.addEventListener("pageshow", handleVisibility);
+
+    return () => {
+      window.removeEventListener("pageshow", handleVisibility);
+    };
+  }, []);
   return (
     <>
       <div className="bg-amber-50 min-h-screen flex flex-col">
