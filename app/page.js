@@ -11,11 +11,11 @@ const gridLinks = [
   //   href: "/batting/randomnumbertimer",
   //   btn: "Play Now / अभी खेलें",
   // },
-  {
-    text: "Online Gaming / Betting Platform",
-    href: "/batting",
+   {
+    text: "PAN RESIZE MAKER",
+     href: "/pancard",
     btn: "Play Now / अभी खेलें",
-  },
+   },
   {
     text: "CSC रजिस्ट्रेशन (CSC Registration / Digital Seva)",
     href: "https://cscregister.csccloud.in/",
