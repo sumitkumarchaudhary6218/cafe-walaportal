@@ -5,18 +5,19 @@ import { useState } from "react";
 // Latest Updates
 const latestUpdates = [
   { id: 1, text: "📢 PAN Users Alert 🚨 | 1 April 2026 se New Rule लागू 😱 Aadhaar Ab DOB Proof Nahi ❌ PAN Reject Pakka!", url: "/panAlert" },
-  { id: 2, text: "Bihar Udyami Yojana Project List 2025-26 Download – बिहार सरकार ने उद्यमी योजना के तहत किस रोजगार पर कितना पैसा मिलेगी प्रोजेक्ट लिस्ट हुआ जारी?", url: "/#" },
-  { id: 3, text: "BSSC Exam Calendar 2026 Out | Bihar SSC Inter Level, CGL-4, BSO, Parichari Exam Date Out", url: "/bssc-exam-calendar-2026" },
-  { id: 4, text: "NCET Integrated B.ed Form 2026 : Apply for 4-Year ITEP (B.A+B.Ed./B.Sc.+B.Ed./B.Com.+B.Ed.), Check Dates, Eligibility, Fee", url: "/#" },
-  { id: 5, text: "Bihar Jeevika Answer Key 2025 : How to Check & Download Bihar Jeevika Answer Key 2025?", url: "/#" },
-  { id: 6, text: "UP BEd Online Form 2026 Notification, Eligibility & Last Date to Apply?", url: "/#" },
-  { id: 7, text: "JEE Mains 2026 Session 2 Form 2026 : जेईई मेन्स 2026 सेशन 2 के लिए ऑनलाइन शुरू ऐसे करें आवेदन?", url: "/#" },
-  { id: 8, text: "Tata Pankh Scholarship 2025-26 : टाटा दे रही है 10वीं, 12वीं के छात्रवृत्ति योजना शुरू, ऐसे करें आवेदन?", url: "/#" },
-  { id: 9, text: "Railway Group D Syllabus 2026 : Exam Pattern, PET Syllabus & Selection Process?", url: "https://www.rrbapply.gov.in/#/auth/landing" },
-  { id: 10, text: "CTET Feb Admit Card 2026 Kaise Download Kare | How to Download Ctet admit card 2026?", url: "/#" },
-  { id: 11, text: "CTET February 2026 City Intimation Slip 2026 Download Link (Out) – परीक्षा सिटी जरूरी, जाने कब होगी परीक्षा, Admit Card ऐसे करें उठानलोड?", url: "/#" },
-  { id: 12, text: "Parimarjan Kaise kare – पुराना से पुराना जमीन को दुरस्त पर कैसे उठाएं", url: "/#" },
-];
+  { id: 1, text: "PAN Card Apply Process Changed 2026 ⚠️ अब ऐसे बनेगा पैन कार्ड", url: "#" },
+  { id: 1, text: "अब ऐसे होगा Aadhaar Mobile Link 2026 | New Process Update 🔥", url: "#" },
+  { id: 1, text: "ड्राइविंग लाइसेंस Apply 2026 कैसे करें", url: "#" },
+  { id: 1, text: "आयुष्मान कार्ड Apply Online 2026 कैसे करें", url: "#" },
+  { id: 1, text: "Top 5 सरकारी Loan योजना कौन-कौन सी हैं", url: "#" },
+  { id: 1, text: "CSC Center कैसे खोलें 2026 में पूरी जानकारी", url: "#" },
+  { id: 1, text: "E-Shram Card कैसे बनाएं 2026 में", url: "#" },
+  { id: 1, text: "Voter Card कैसे बनाएं 2026 में", url: "#" },
+  { id: 1, text: "आधार कार्ड में मोबाइल नंबर लिंक कैसे करें", url: "#" },
+  { id: 1, text: "TEC Certificate कैसे बनाएं 2026 में", url: "#" },
+  { id: 1, text: "Aadhaar Seeding Online 2026 कैसे करें", url: "#" },
+  { id: 1, text: "PAN Card Apply कैसे करें", url: "#" },
+]
 
 // Latest Downloads
 const latestDownloads = [
@@ -34,6 +35,36 @@ const latestDownloads = [
   { id: 13, text: "Ration Card Download : बिहार राशन कार्ड ऑनलाइन डाउनलोड कैसे करें?", url: "https://epos.bihar.gov.in/SRC_Trans_Int.jsp" },
   { id: 14, text: "PM Kisan Beneficiary Status & Certificate Download कैसे करें?", url: "https://pmkisan.gov.in/BeneficiaryStatus_New.aspx" },
   { id: 15, text: "Driving Licence Download : DigiLocker / Parivahan से DL डाउनलोड कैसे करें?", url: "https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do" },
+];
+
+const latestDownloadCourse = [
+  { id: 1, text: "Free Course 2026: Voter ID Card Download – Online E-EPIC Step-by-Step Guide", url: "https://voters.eci.gov.in/home/e-epic-download" },
+
+  { id: 3, text: "Free Course 2026: Ayushman Card Download – Ayushman Bharat Card Full Process Guide", url: "https://beneficiary.nha.gov.in/" },
+
+  { id: 4, text: "Free Course: Aadhaar Card Download – Aadhaar PDF Online Easy Method", url: "https://myaadhaar.uidai.gov.in/genricDownloadAadhaar/en" },
+
+  { id: 5, text: "Free Course 2026: E Shram Card Download – Registration, Download & Print Guide", url: "https://register.eshram.gov.in/#/user/self" },
+
+  { id: 6, text: "Free Course: ABC ID Card Download – Academic Bank of Credit ID Full Guide", url: "https://www.digilocker.gov.in/web/dashboard/issuers/010212" },
+
+  { id: 7, text: "Free Course: Caste Certificate Download – Online Bihar RTPS Full Process", url: "https://swcs.bihar.gov.in/RtpsReportView/certificate_download.jsp" },
+
+  { id: 8, text: "Free Course: Income Certificate Download – Online Apply & Download Guide", url: "https://swcs.bihar.gov.in/RtpsReportView/certificate_download.jsp" },
+
+  { id: 9, text: "Free Course: Residence Certificate Download – Online Apply & Status Check", url: "https://swcs.bihar.gov.in/RtpsReportView/certificate_download.jsp" },
+
+  { id: 10, text: "Free Course: Birth Certificate Download – Online Process Step-by-Step", url: "https://swcs.bihar.gov.in/RtpsReportView/certificate_download.jsp" },
+
+  { id: 11, text: "Free Course: Death Certificate Download – Online Apply & Download Guide", url: "https://swcs.bihar.gov.in/RtpsReportView/certificate_download.jsp" },
+
+  { id: 12, text: "Free Course: Labour Card Download – Bihar Labour Registration & Status Guide", url: "https://bocwscheme.bihar.gov.in/worker_login" },
+
+  { id: 13, text: "Free Course: Ration Card Download – Bihar Ration Card Online Full Guide", url: "https://epos.bihar.gov.in/SRC_Trans_Int.jsp" },
+
+  { id: 14, text: "Free Course: PM Kisan Status & Certificate – Beneficiary Check Full Guide", url: "https://pmkisan.gov.in/BeneficiaryStatus_New.aspx" },
+
+  { id: 15, text: "Free Course: Driving Licence Download – DigiLocker & Parivahan DL Guide", url: "https://sarathi.parivahan.gov.in/sarathiservice/stateSelection.do" },
 ];
 
 // NewsItem Component
@@ -59,32 +90,47 @@ function NewsItem({ item }) {
   );
 }
 
+const colorVariants = {
+  update: {
+    header: "bg-gradient-to-r from-blue-700 to-blue-500",
+    footer: "bg-blue-50",
+    text: "text-blue-600 hover:text-blue-800",
+    icon: "🔔",
+  },
+  download: {
+    header: "bg-gradient-to-r from-green-700 to-green-500",
+    footer: "bg-green-50",
+    text: "text-green-600 hover:text-green-800",
+    icon: "📥",
+  },
+  course: {
+    header: "bg-gradient-to-r from-purple-700 to-purple-500",
+    footer: "bg-purple-50",
+    text: "text-purple-600 hover:text-purple-800",
+    icon: "🎓",
+  },
+};
 // SectionCard Component
 function SectionCard({ title, items, accentColor }) {
-  const isUpdate = accentColor === "update";
+  const colors = colorVariants[accentColor] || colorVariants.update;
 
   return (
-    <div className="flex flex-col rounded-xl overflow-hidden shadow-md border border-gray-200 bg-white h-full">
+    <div className="flex flex-col rounded-xl overflow-hidden shadow-md border border-gray-200 bg-white h-full hover:shadow-xl transition duration-300">
+      
       {/* Header */}
-      <div className={`
-        px-4 py-3 flex items-center gap-2
-        ${isUpdate
-          ? "bg-gradient-to-r from-blue-700 to-blue-500"
-          : "bg-gradient-to-r from-green-700 to-green-500"
-        }
-      `}>
-        <span className="text-white text-lg">
-          {isUpdate ? "🔔" : "💼"}
-        </span>
+      <div className={`px-4 py-3 flex items-center gap-2 ${colors.header}`}>
+        <span className="text-white text-lg">{colors.icon}</span>
+
         <h2 className="text-white font-bold text-base tracking-wide uppercase">
           {title}
         </h2>
+
         <span className="ml-auto bg-white/20 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
           {items.length} new
         </span>
       </div>
 
-      {/* Scrollable list */}
+      {/* List */}
       <div className="flex-1 overflow-y-auto max-h-[520px] divide-y divide-gray-50 scrollbar-thin scrollbar-thumb-gray-300">
         {items.map((item) => (
           <NewsItem key={item.id} item={item} />
@@ -92,29 +138,22 @@ function SectionCard({ title, items, accentColor }) {
       </div>
 
       {/* Footer */}
-      <div className={`
-        px-4 py-2 text-center border-t border-gray-100
-        ${isUpdate ? "bg-blue-50" : "bg-green-50"}
-      `}>
+      <div className={`px-4 py-2 text-center border-t border-gray-100 ${colors.footer}`}>
         <a
           href="#"
-          className={`
-            text-xs font-semibold hover:underline
-            ${isUpdate ? "text-blue-600 hover:text-blue-800" : "text-green-600 hover:text-green-800"}
-          `}
+          className={`text-xs font-semibold hover:underline ${colors.text}`}
         >
-          View All {isUpdate ? "Updates" : ""} →
+          View All →
         </a>
       </div>
     </div>
   );
 }
-
 // Main Page Component
 export default function Disclaimerpage() {
   return (
     <section className="w-full bg-gray-50 py-6 px-3 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
         <SectionCard
           title="Latest Update"
           items={latestUpdates}
@@ -123,7 +162,12 @@ export default function Disclaimerpage() {
         <SectionCard
           title="Download ID Card & Certificate"
           items={latestDownloads}
-          accentColor="jobs"
+          accentColor="download"
+        />
+        <SectionCard
+          title="Free Course"
+          items={latestDownloadCourse}
+          accentColor="course"
         />
       </div>
     </section>
