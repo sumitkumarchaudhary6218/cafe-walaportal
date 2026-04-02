@@ -6,11 +6,12 @@ import Marquee from "./component/Marquee";
 import Loader from "./component/Loader";
 
 const gridLinks = [
-  // {
-  //   text: "Ramnagar",
-  //   href: "/batting/randomnumbertimer",
-  //   btn: "Play Now / अभी खेलें",
-  // },
+ 
+   {
+    text: "Toolscollection",
+     href: "/toolscollection",
+    btn: "Play Now / अभी खेलें",
+   },
    {
     text: "PAN RESIZE MAKER",
      href: "/pancard",
