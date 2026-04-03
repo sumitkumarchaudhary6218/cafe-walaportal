@@ -99,8 +99,8 @@ const IDCardPrintTool = () => {
                     }
                     /* Standard ID Card Size: 85.6mm x 54mm */
                     .print-image-slot {
-                        width: 85.6mm !important;
-                        height: 54mm !important;
+                        width: 85.6mm !important;git 
+                        height: 55mm !important;
                         border: 0.1mm solid #000 !important;
                         -webkit-print-color-adjust: exact;
                     }
@@ -185,9 +185,9 @@ const IDCardPrintTool = () => {
                             >
                                 <Printer size={16} /> Print Now
                             </button>
-                            <button 
-                              onClick={handleDownloadPDF}
-                            className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
+                            <button
+                                onClick={handleDownloadPDF}
+                                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
                                 <FileText size={16} /> Download PDF
                             </button>
                         </div>
@@ -219,23 +219,27 @@ const IDCardPrintTool = () => {
                                         {cards.map((card) => (
                                             <div
                                                 key={card.id}
-                                                className="print-card-container flex flex-row gap-4 mb-4"
+                                                className="print-card-container flex flex-row gap-6 mb-6"
                                             >
                                                 {/* Front Slot */}
-                                                <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
+                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
                                                     {card.front ? (
                                                         <img src={card.front} className="w-full h-full object-fill" alt="Front" />
                                                     ) : (
-                                                        <span className="text-[10px] text-slate-300 font-bold uppercase">Front Side</span>
+                                                        <span className="text-xs text-slate-300 font-bold uppercase">
+                                                            Front Side
+                                                        </span>
                                                     )}
                                                 </div>
 
                                                 {/* Back Slot */}
-                                                <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
+                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
                                                     {card.back ? (
                                                         <img src={card.back} className="w-full h-full object-fill" alt="Back" />
                                                     ) : (
-                                                        <span className="text-[10px] text-slate-300 font-bold uppercase">Back Side</span>
+                                                        <span className="text-xs text-slate-300 font-bold uppercase">
+                                                            Back Side
+                                                        </span>
                                                     )}
                                                 </div>
                                             </div>
