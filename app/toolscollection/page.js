@@ -21,30 +21,51 @@ const topFilters = [
 ];
 
 const tools = [
-  {
-    id: 1,
-    title: "Multiple ID Cards Print",
-    description: ".",
-    category: "document",
-    bg: "from-blue-50 to-indigo-100",
-    accent: "#4F46E5",
-    emoji: "📋",
-    badge: null,
-    url: "/cardprinttool"
-  },
-  {
-    id: 2, // ✅ changed id
-    title: "Typing Test",
-    description: ".",
-    category: "Typing Test",
-    bg: "from-blue-50 to-indigo-100",
-    accent: "#4F46E5",
-    emoji: "⌨️", // optional better emoji
-    badge: null,
-    url: "/typingtest"
-  }
+    {
+        id: 1,
+        title: "Multiple ID Cards Print",
+        description: "Create and print multiple ID cards on a single A4 page. Supports Aadhaar, PAN, and other cards with easy layout adjustment and PDF download.",
+        category: "document",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        emoji: "📋",
+        badge: null,
+        url: "/cardprinttool"
+    },
+    {
+        id: 2,
+        title: "PAN Card Tool",
+        description: "Edit, resize, and print PAN cards with proper dimensions. Ideal for quick printing and layout adjustments.",
+        category: "document",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        emoji: "🪪",
+        badge: "New",
+        url: "/pancard"
+    },
+    {
+        id: 3,
+        title: "Typing Test",
+        description: "Improve your typing speed and accuracy with real-time tests. Track WPM, accuracy, and practice with different text levels.",
+        category: "Typing Test",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        emoji: "⌨️",
+        badge: null,
+        url: "/typingtest"
+    },
+    {
+        id: 4,
+        title: "Image Compressor",
+        description: "Compress and reduce image size without losing quality. Supports fast processing for JPG, PNG, and more.",
+        category: "tools",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        emoji: "🖼️",
+        badge: "Popular",
+        url: "/imageCompressor"
+    }
 ];
-
 export default function ToolsCollection() {
     const [activeFilter, setActiveFilter] = useState("all");
     const [activeSidebar, setActiveSidebar] = useState("all");
@@ -91,7 +112,7 @@ export default function ToolsCollection() {
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 pb-16 flex flex-col md:flex-row gap-6">
                 {/* Sidebar */}
-                
+
 
                 {/* Tools Grid */}
                 <main className="flex-1">
