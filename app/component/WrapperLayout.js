@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Footer from "./Footer";
+import HomepageButton from "./HomepageButton";
 
 const SocialButtons = dynamic(() => import("./SocialButtons"), {
   ssr: false,
@@ -30,6 +31,7 @@ export default function WrapperLayout({ children }) {
       {children}
 
       <ScrollToTopButton />
+      <HomepageButton/>
 
       {!isDashboard && <Footer />}
     </>
