@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import jsPDF from "jspdf";
 
 // ✅ Official Size Specs
 const SPECS = {
@@ -109,6 +110,85 @@ export default function PANCardEditor() {
   };
   const sl = sliderMap[activeControl] ?? sliderMap.zoom;
   const percentage = ((sl.value - sl.min) / (sl.max - sl.min)) * 100;
+
+
+
+
+  const downloadPDF = async () => {
+    if (!resizedImage) return;
+
+    const targetKB = 280; // 🎯 Target size
+
+    const img = new Image();
+    img.src = resizedImage;
+
+    img.onload = async () => {
+      let minQ = 0.1;
+      let maxQ = 1.0;
+      let finalBlob = null;
+
+      for (let i = 0; i < 10; i++) {
+        let midQ = (minQ + maxQ) / 2;
+
+        // 🎯 Canvas compress
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", midQ);
+
+        // 🎯 Create PDF
+        const pdf = new jsPDF({
+          unit: "px",
+          format: "a4",
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const ratio = Math.min(
+          pageWidth / img.width,
+          pageHeight / img.height
+        );
+
+        const width = img.width * ratio;
+        const height = img.height * ratio;
+
+        pdf.addImage(
+          dataUrl,
+          "JPEG",
+          (pageWidth - width) / 2,
+          (pageHeight - height) / 2,
+          width,
+          height
+        );
+
+        const blob = pdf.output("blob");
+        const sizeKB = blob.size / 1024;
+
+        if (sizeKB > targetKB) {
+          maxQ = midQ; // compress more
+        } else {
+          minQ = midQ;
+          finalBlob = blob;
+        }
+      }
+
+      // ✅ Download final PDF
+      const url = URL.createObjectURL(finalBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "document_280kb.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-6">
@@ -228,8 +308,22 @@ export default function PANCardEditor() {
                   <button onClick={() => { setActiveControl("rotation"); setRotation(r => r + 90); }} className="bg-gray-800 text-white py-2 rounded-lg text-xs font-bold">Rotate R</button>
                 </div>
 
-                <button onClick={() => { const a = document.createElement("a"); a.href = resizedImage; a.download = `pan_photo.jpg`; a.click(); }}
-                  className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-transform uppercase">Download Result</button>
+                <button
+                  onClick={() => {
+                    if (type === "Document") {
+                      downloadPDF();
+                    } else {
+                      const a = document.createElement("a");
+                      a.href = resizedImage;
+                      a.download = `pan_${type}.jpg`;
+                      a.click();
+                    }
+                  }}
+                  className="w-full cursor-pointer bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-transform uppercase"
+
+                >
+                  Download Result
+                </button>
               </div>
             </div>
           )}
