@@ -15,10 +15,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Cyber Cafe Wala",
-  description: "Cyber Cafe Walo Ka Apna Portal",
-  icons: {
-    icon: "/favicon.svg",
+  title: "Cyber Cafe Wala | RTPS, Certificate Services",
+  description:
+    "RTPS Bihar services जैसे जाति प्रमाण पत्र, आय प्रमाण पत्र और आवेदन स्थिति ऑनलाइन देखें।",
+
+  keywords: [
+    "RTPS Bihar",
+    "जाति प्रमाण पत्र",
+    "आय प्रमाण पत्र",
+    "Cyber Cafe",
+    "Online Service Bihar",
+  ],
+
+  openGraph: {
+    title: "Cyber Cafe Wala",
+    description: "सभी सरकारी सेवाएं एक जगह",
+    url: "https://yourdomain.com",
+    siteName: "Cyber Cafe Wala",
+    type: "website",
+  },
+
+  alternates: {
+    canonical: "https://yourdomain.com",
   },
 };
 
