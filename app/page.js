@@ -4,14 +4,11 @@ import Disclaimer from "./component/Disclaimer";
 import DisclaimerPage from "./component/Disclaimerpage";
 import Marquee from "./component/Marquee";
 import Loader from "./component/Loader";
+import AlertBanner from "./component/AlertBanner";
 
 const gridLinks = [
  
-   {
-    text: "Toolscollection",
-     href: "/toolscollection",
-    btn: "Play Now / अभी खेलें",
-   },
+   
    {
     text: "PAN RESIZE MAKER",
      href: "/pancard",
@@ -184,9 +181,15 @@ export default function OnlineUpdateSTM() {
               );
             })}
           </div>
+
+          
         </main>
 
+
+         
+
         <DisclaimerPage />
+         <AlertBanner show={true} />
         <Disclaimer />
       </div>
       {loading && <Loader />}
