@@ -60,6 +60,7 @@ export default function RootLayout({ children }) {
         />
 
         {/* 🔥 ITEM LIST (RTPS SERVICES) */}
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -71,7 +72,7 @@ export default function RootLayout({ children }) {
                   "@type": "ListItem",
                   position: 1,
                   name: "आवेदन की स्थिति देखें",
-                  url: "https://sevaupdates.com/rtps-status",
+                  url: "https://sevaupdates.com/pancard",
                 },
                 {
                   "@type": "ListItem",
