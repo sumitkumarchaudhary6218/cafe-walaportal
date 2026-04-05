@@ -64,6 +64,17 @@ const tools = [
         emoji: "🖼️",
         badge: "Popular",
         url: "/imageCompressor"
+    },
+    {
+        id: 6,
+        title: "PDF to JPG",
+        description: "Convert PDF pages into high-quality JPG images quickly. Extract images from PDF files for easy use, sharing, or editing.",
+        category: "tools",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        emoji: "📄",
+        badge: "New",
+        url: "/fileconverter"
     }
 ];
 export default function ToolsCollection() {

@@ -4,7 +4,8 @@ import Disclaimer from "./component/Disclaimer";
 import DisclaimerPage from "./component/Disclaimerpage";
 import Marquee from "./component/Marquee";
 import Loader from "./component/Loader";
-import AlertBanner from "./component/AlertBanner";
+import AlertBanner from "./component/DigitalToolsBox";
+import DigitalToolsBox from "./component/DigitalToolsBox";
 
 const gridLinks = [
  
@@ -189,7 +190,7 @@ export default function OnlineUpdateSTM() {
          
 
         <DisclaimerPage />
-         <AlertBanner show={true} />
+         <DigitalToolsBox show={true} />
         <Disclaimer />
       </div>
       {loading && <Loader />}

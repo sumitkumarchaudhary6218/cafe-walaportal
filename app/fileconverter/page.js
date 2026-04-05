@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 
-// ─── tiny helpers ──────────────────────────────────────────────────────────────
 const readFileAsDataURL = (file) =>
   new Promise((res, rej) => {
     const r = new FileReader();
@@ -28,15 +27,7 @@ const downloadBlob = (blob, filename) => {
   URL.revokeObjectURL(url);
 };
 
-// ─── JPG → PDF (pure canvas, no lib needed) ───────────────────────────────────
 async function convertImagesToPdf(files, quality = 0.92) {
-  // We'll use jsPDF loaded from CDN via dynamic import-like approach
-  // Since we can't use dynamic CDN in Next.js easily, we build a minimal PDF manually
-  // using canvas + raw PDF bytes approach via jsPDF script tag check,
-  // OR we embed pages into a single PDF using the browser's print API as fallback.
-  // For production use, install: npm i jspdf
-  // Here we create a proper multi-page PDF using raw PDF structure:
-
   const pages = [];
   for (const file of files) {
     const dataUrl = await readFileAsDataURL(file);
@@ -50,9 +41,6 @@ async function convertImagesToPdf(files, quality = 0.92) {
     });
   }
 
-  // Build PDF using canvas → blob per page, then stitch with pdf-lib style raw PDF
-  // We'll use the simplest approach: single-canvas PDF
-  // Load jsPDF via script tag if not already loaded
   if (!window.jspdf) {
     await new Promise((res, rej) => {
       const s = document.createElement("script");
@@ -72,30 +60,34 @@ async function convertImagesToPdf(files, quality = 0.92) {
     const p = pages[i];
     if (i > 0) doc.addPage([p.w, p.h], p.w > p.h ? "l" : "p");
     const canvas = document.createElement("canvas");
-    canvas.width = p.w; canvas.height = p.h;
+    canvas.width = p.w;
+    canvas.height = p.h;
     canvas.getContext("2d").drawImage(p.img, 0, 0);
     const dataUrl = canvas.toDataURL("image/jpeg", quality);
     doc.addImage(dataUrl, "JPEG", 0, 0, p.w, p.h, undefined, "FAST");
   }
 
-  const blob = doc.output("blob");
-  return blob;
+  return doc.output("blob");
 }
 
-// ─── PDF → JPG (using PDF.js) ─────────────────────────────────────────────────
 async function convertPdfToImages(file, scale = 2) {
   const arrayBuffer = await readFileAsArrayBuffer(file);
-  const pdfjsLib = await import("https://cdn.skypack.dev/pdfjs-dist").catch(() => null);
 
-  if (!pdfjsLib) throw new Error("PDF.js not available");
+  if (!window.pdfjsLib) {
+    await new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+      s.onload = res;
+      s.onerror = () => rej(new Error("Failed to load PDF.js"));
+      document.head.appendChild(s);
+    });
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-  const pdf = await loadingTask.promise;
-
+  const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   const images = [];
+
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum);
     const viewport = page.getViewport({ scale });
@@ -111,7 +103,6 @@ async function convertPdfToImages(file, scale = 2) {
   return images;
 }
 
-// ─── UI COMPONENT ─────────────────────────────────────────────────────────────
 const MODES = { IMG_TO_PDF: "img2pdf", PDF_TO_IMG: "pdf2img" };
 
 export default function FileConverter() {
@@ -119,7 +110,7 @@ export default function FileConverter() {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [outputImages, setOutputImages] = useState([]);
-  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [quality, setQuality] = useState(92);
   const [scale, setScale] = useState(2);
@@ -141,28 +132,42 @@ export default function FileConverter() {
     reset();
   };
 
-  const processFiles = useCallback(async (incoming) => {
-    if (!incoming.length) return;
-    reset();
+  const processFiles = useCallback(
+    async (incoming) => {
+      if (!incoming.length) return;
+      reset();
 
-    if (mode === MODES.IMG_TO_PDF) {
-      const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-      if (!imgs.length) { setErrorMsg("Please drop image files (JPG, PNG, WebP)."); setStatus("error"); return; }
-      setFiles(imgs);
-      const urls = await Promise.all(imgs.map(readFileAsDataURL));
-      setPreviews(urls);
-    } else {
-      const pdfs = Array.from(incoming).filter((f) => f.type === "application/pdf");
-      if (!pdfs.length) { setErrorMsg("Please drop a PDF file."); setStatus("error"); return; }
-      setFiles([pdfs[0]]);
-    }
-  }, [mode]);
+      if (mode === MODES.IMG_TO_PDF) {
+        const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
+        if (!imgs.length) {
+          setErrorMsg("Please drop image files (JPG, PNG, WebP).");
+          setStatus("error");
+          return;
+        }
+        setFiles(imgs);
+        const urls = await Promise.all(imgs.map(readFileAsDataURL));
+        setPreviews(urls);
+      } else {
+        const pdfs = Array.from(incoming).filter((f) => f.type === "application/pdf");
+        if (!pdfs.length) {
+          setErrorMsg("Please drop a PDF file.");
+          setStatus("error");
+          return;
+        }
+        setFiles([pdfs[0]]);
+      }
+    },
+    [mode]
+  );
 
-  const onDrop = useCallback((e) => {
-    e.preventDefault();
-    setDragOver(false);
-    processFiles(e.dataTransfer.files);
-  }, [processFiles]);
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      setDragOver(false);
+      processFiles(e.dataTransfer.files);
+    },
+    [processFiles]
+  );
 
   const onFileChange = (e) => processFiles(e.target.files);
 
@@ -197,256 +202,764 @@ export default function FileConverter() {
     outputImages.forEach((img) => downloadImage(img.dataUrl, img.pageNum));
   };
 
+  const isImg2Pdf = mode === MODES.IMG_TO_PDF;
+
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white font-sans flex flex-col items-center justify-start px-4 py-12 selection:bg-violet-500/30">
+    <div className="fc-root">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-        * { font-family: 'DM Sans', sans-serif; }
-        .title-font { font-family: 'Syne', sans-serif; }
-        .glow { box-shadow: 0 0 40px rgba(139,92,246,0.25); }
-        .glow-sm { box-shadow: 0 0 16px rgba(139,92,246,0.3); }
-        .border-grad { border: 1px solid rgba(139,92,246,0.3); }
-        .bg-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); }
-        .tab-active { background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
-        .btn-primary { background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); transition: all .2s; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.5); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
-        .drop-zone { transition: all .25s; }
-        .drop-zone:hover, .drop-active { border-color: rgba(139,92,246,0.7) !important; background: rgba(139,92,246,0.06) !important; }
-        .thumb { transition: transform .2s; }
-        .thumb:hover { transform: scale(1.04); }
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .fade-up { animation: fadeUp .4s ease both; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        .badge { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); }
-        .noise { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E"); }
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap');
+
+        .fc-root {
+          min-height: 100vh;
+          background: #f7f6f3;
+          font-family: 'Geist', sans-serif;
+          color: #1a1a1a;
+          padding: 0;
+        }
+
+        /* ── TOP NAV ── */
+        .fc-nav {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 32px;
+          background: #fff;
+          border-bottom: 1px solid #e8e5df;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+        .fc-nav-logo {
+          font-family: 'Instrument Serif', serif;
+          font-size: 20px;
+          color: #1a1a1a;
+          letter-spacing: -0.3px;
+        }
+        .fc-nav-logo span { color: #d97706; }
+        .fc-nav-tag {
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: .1em;
+          text-transform: uppercase;
+          color: #a8a29e;
+          background: #f5f4f0;
+          border: 1px solid #e8e5df;
+          padding: 4px 12px;
+          border-radius: 999px;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .fc-layout {
+          display: grid;
+          grid-template-columns: 320px 1fr;
+          min-height: calc(100vh - 61px);
+        }
+
+        /* ── LEFT PANEL ── */
+        .fc-left {
+          background: #fff;
+          border-right: 1px solid #e8e5df;
+          padding: 32px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .fc-section-label {
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: .12em;
+          text-transform: uppercase;
+          color: #a8a29e;
+          margin-bottom: 12px;
+        }
+
+        /* Mode toggle */
+        .fc-mode-group {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          margin-bottom: 28px;
+        }
+        .fc-mode-btn {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 10px;
+          border: 1.5px solid transparent;
+          background: transparent;
+          cursor: pointer;
+          transition: all .18s;
+          text-align: left;
+          font-family: 'Geist', sans-serif;
+        }
+        .fc-mode-btn:hover { background: #f7f6f3; border-color: #e8e5df; }
+        .fc-mode-btn.active {
+          background: #fffbf5;
+          border-color: #d97706;
+        }
+        .fc-mode-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          background: #f5f4f0;
+          flex-shrink: 0;
+          transition: background .18s;
+        }
+        .fc-mode-btn.active .fc-mode-icon { background: #fef3c7; }
+        .fc-mode-text-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: #1a1a1a;
+          line-height: 1.2;
+        }
+        .fc-mode-text-sub {
+          font-size: 11px;
+          color: #a8a29e;
+          margin-top: 1px;
+        }
+        .fc-mode-check {
+          margin-left: auto;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #d97706;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity .18s;
+          flex-shrink: 0;
+        }
+        .fc-mode-btn.active .fc-mode-check { opacity: 1; }
+        .fc-mode-check svg { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .fc-divider { height: 1px; background: #e8e5df; margin: 4px 0 24px; }
+
+        /* Settings */
+        .fc-settings-group { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+        .fc-setting-item { display: flex; flex-direction: column; gap: 8px; }
+        .fc-setting-row { display: flex; align-items: center; justify-content: space-between; }
+        .fc-setting-name { font-size: 12px; font-weight: 500; color: #57534e; }
+        .fc-setting-val { font-size: 12px; font-weight: 600; color: #d97706; }
+        .fc-slider {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 3px;
+          border-radius: 2px;
+          background: #e8e5df;
+          outline: none;
+          cursor: pointer;
+        }
+        .fc-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: #d97706;
+          border: 2px solid #fff;
+          box-shadow: 0 1px 4px rgba(0,0,0,.2);
+          cursor: pointer;
+        }
+        .fc-res-group { display: flex; gap: 6px; }
+        .fc-res-btn {
+          flex: 1;
+          padding: 6px 0;
+          border-radius: 7px;
+          border: 1.5px solid #e8e5df;
+          background: #fff;
+          font-size: 11px;
+          font-weight: 600;
+          color: #a8a29e;
+          cursor: pointer;
+          transition: all .15s;
+          font-family: 'Geist', sans-serif;
+        }
+        .fc-res-btn:hover { border-color: #d97706; color: #d97706; }
+        .fc-res-btn.active { border-color: #d97706; background: #fffbf5; color: #d97706; }
+
+        /* File chip */
+        .fc-file-chip {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: #f7f6f3;
+          border: 1px solid #e8e5df;
+          border-radius: 10px;
+          padding: 10px 12px;
+          margin-bottom: 16px;
+        }
+        .fc-file-chip-icon { font-size: 20px; }
+        .fc-file-chip-info { flex: 1; min-width: 0; }
+        .fc-file-chip-name { font-size: 12px; font-weight: 500; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fc-file-chip-size { font-size: 10px; color: #a8a29e; margin-top: 2px; }
+        .fc-chip-clear { background: none; border: none; cursor: pointer; color: #c4b5a0; font-size: 14px; padding: 2px 4px; border-radius: 4px; transition: color .15s; }
+        .fc-chip-clear:hover { color: #ef4444; }
+
+        /* Convert button */
+        .fc-convert-btn {
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          border: none;
+          background: #1a1a1a;
+          color: #fff;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: 'Geist', sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all .2s;
+          letter-spacing: .01em;
+          margin-top: auto;
+        }
+        .fc-convert-btn:hover { background: #2c2c2c; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+        .fc-convert-btn:active { transform: translateY(0); }
+        .fc-convert-btn:disabled { background: #d6d3cd; cursor: not-allowed; transform: none; box-shadow: none; }
+        .fc-convert-btn-accent { color: #fbbf24; margin-right: 2px; }
+
+        .fc-error {
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 8px;
+          padding: 10px 12px;
+          font-size: 12px;
+          color: #dc2626;
+          margin-bottom: 12px;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .fc-right {
+          background: #f7f6f3;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .fc-right-header {
+          padding: 28px 32px 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .fc-right-title {
+          font-family: 'Instrument Serif', serif;
+          font-size: 28px;
+          color: #1a1a1a;
+          line-height: 1.1;
+          letter-spacing: -0.5px;
+        }
+        .fc-right-title em { color: #d97706; font-style: italic; }
+        .fc-right-subtitle { font-size: 13px; color: #a8a29e; margin-top: 6px; font-weight: 400; }
+
+        /* Drop zone */
+        .fc-dropzone-wrap {
+          padding: 24px 32px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+        .fc-dropzone {
+          border: 2px dashed #d6d3cd;
+          border-radius: 16px;
+          background: #fff;
+          padding: 56px 32px;
+          text-align: center;
+          cursor: pointer;
+          transition: all .2s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          min-height: 260px;
+        }
+        .fc-dropzone:hover, .fc-dropzone.over {
+          border-color: #d97706;
+          background: #fffdf7;
+        }
+        .fc-dropzone-icon-wrap {
+          width: 64px;
+          height: 64px;
+          border-radius: 16px;
+          background: #f5f4f0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28px;
+          margin-bottom: 4px;
+          transition: background .2s;
+        }
+        .fc-dropzone:hover .fc-dropzone-icon-wrap, .fc-dropzone.over .fc-dropzone-icon-wrap { background: #fef3c7; }
+        .fc-dropzone-title { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+        .fc-dropzone-sub { font-size: 12px; color: #a8a29e; }
+        .fc-dropzone-sub span { color: #d97706; text-decoration: underline; text-underline-offset: 2px; }
+        .fc-dropzone-formats {
+          display: flex;
+          gap: 6px;
+          margin-top: 4px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .fc-format-tag {
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: .06em;
+          text-transform: uppercase;
+          padding: 3px 8px;
+          border-radius: 4px;
+          background: #f5f4f0;
+          color: #78716c;
+          border: 1px solid #e8e5df;
+        }
+
+        /* Thumbnails */
+        .fc-previews {
+          margin-top: 20px;
+        }
+        .fc-previews-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 12px;
+        }
+        .fc-previews-count {
+          font-size: 12px;
+          font-weight: 500;
+          color: #78716c;
+        }
+        .fc-clear-link {
+          background: none;
+          border: none;
+          font-size: 12px;
+          color: #a8a29e;
+          cursor: pointer;
+          font-family: 'Geist', sans-serif;
+          transition: color .15s;
+        }
+        .fc-clear-link:hover { color: #ef4444; }
+        .fc-thumb-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          gap: 8px;
+        }
+        .fc-thumb {
+          aspect-ratio: 1;
+          border-radius: 10px;
+          overflow: hidden;
+          border: 1.5px solid #e8e5df;
+          position: relative;
+          cursor: pointer;
+          transition: border-color .15s;
+        }
+        .fc-thumb:hover { border-color: #d97706; }
+        .fc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .fc-thumb-num {
+          position: absolute;
+          bottom: 4px;
+          right: 4px;
+          background: rgba(0,0,0,.55);
+          color: #fff;
+          font-size: 9px;
+          font-weight: 700;
+          padding: 2px 5px;
+          border-radius: 4px;
+        }
+
+        /* Output images */
+        .fc-output-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 12px;
+          margin-top: 20px;
+        }
+        .fc-output-card {
+          border-radius: 12px;
+          overflow: hidden;
+          border: 1.5px solid #e8e5df;
+          cursor: pointer;
+          position: relative;
+          aspect-ratio: 3/4;
+          background: #fff;
+          transition: border-color .15s, transform .15s;
+        }
+        .fc-output-card:hover { border-color: #d97706; transform: translateY(-2px); }
+        .fc-output-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .fc-output-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0,0,0,.52);
+          opacity: 0;
+          transition: opacity .2s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          gap: 4px;
+        }
+        .fc-output-card:hover .fc-output-overlay { opacity: 1; }
+        .fc-output-overlay-icon { font-size: 20px; }
+        .fc-output-overlay-label { font-size: 11px; font-weight: 500; }
+        .fc-page-badge {
+          position: absolute;
+          top: 6px;
+          left: 6px;
+          background: rgba(217,119,6,.85);
+          color: #fff;
+          font-size: 9px;
+          font-weight: 700;
+          padding: 2px 7px;
+          border-radius: 999px;
+          letter-spacing: .04em;
+        }
+
+        /* Done state */
+        .fc-done {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 48px 32px;
+          text-align: center;
+          flex: 1;
+        }
+        .fc-done-check {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: #d1fae5;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .fc-done-check svg { width: 26px; height: 26px; stroke: #059669; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .fc-done-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: #1a1a1a; }
+        .fc-done-sub { font-size: 13px; color: #a8a29e; }
+        .fc-done-reset {
+          background: none;
+          border: 1.5px solid #e8e5df;
+          padding: 8px 20px;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #78716c;
+          cursor: pointer;
+          font-family: 'Geist', sans-serif;
+          margin-top: 4px;
+          transition: all .15s;
+        }
+        .fc-done-reset:hover { border-color: #d97706; color: #d97706; }
+
+        /* Output header */
+        .fc-output-actions {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 20px;
+        }
+        .fc-dl-all-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          border-radius: 8px;
+          border: 1.5px solid #1a1a1a;
+          background: #1a1a1a;
+          color: #fff;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: 'Geist', sans-serif;
+          transition: all .15s;
+        }
+        .fc-dl-all-btn:hover { background: #2c2c2c; }
+
+        .fc-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255,255,255,.3);
+          border-top-color: #fff;
+          border-radius: 50%;
+          animation: fcspin .7s linear infinite;
+        }
+        @keyframes fcspin { to { transform: rotate(360deg); } }
+
+        .fc-empty-state {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          flex: 1;
+          padding: 40px;
+          text-align: center;
+          color: #c4b5a0;
+          gap: 8px;
+        }
+        .fc-empty-icon { font-size: 36px; opacity: .4; }
+        .fc-empty-text { font-size: 13px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .fc-layout { grid-template-columns: 1fr; }
+          .fc-left { border-right: none; border-bottom: 1px solid #e8e5df; }
+          .fc-convert-btn { margin-top: 16px; }
+        }
       `}</style>
 
-      {/* Background orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] left-[10%] w-[600px] h-[600px] rounded-full bg-violet-700/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[5%] w-[400px] h-[400px] rounded-full bg-indigo-600/10 blur-[100px]" />
-        <div className="noise absolute inset-0 w-full h-full" />
-      </div>
+      {/* NAV */}
+      {/* <nav className="fc-nav">
+        <span className="fc-nav-logo">
+          file<span>.</span>craft
+        </span>
+        <span className="fc-nav-tag">Browser-only · Private</span>
+      </nav> */}
 
-      {/* Header */}
-      <div className="relative z-10 text-center mb-10 fade-up">
-        <div className="inline-flex items-center gap-2 badge rounded-full px-4 py-1.5 text-xs text-violet-300 mb-4 uppercase tracking-widest">
-          <span className="w-1.5 h-1.5 rounded-full bg-violet-400 inline-block animate-pulse" />
-          File Converter
-        </div>
-        <h1 className="title-font text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-          <span className="bg-gradient-to-r from-violet-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
-            Convert
-          </span>{" "}
-          <span className="text-white/90">Anything.</span>
-        </h1>
-        <p className="text-white/40 mt-3 text-sm md:text-base font-light max-w-md mx-auto">
-          Images to PDF or PDF to images — fast, private, and fully in-browser.
-        </p>
-      </div>
+      <div className="fc-layout">
+        {/* ── LEFT PANEL ── */}
+        <aside className="fc-left">
+          <p className="fc-section-label">Conversion Mode</p>
 
-      {/* Main Card */}
-      <div className="relative z-10 w-full max-w-2xl bg-card border-grad rounded-2xl p-6 md:p-8 glow fade-up" style={{ animationDelay: ".1s" }}>
-
-        {/* Mode Tabs */}
-        <div className="flex bg-white/5 rounded-xl p-1 mb-8">
-          {[
-            { id: MODES.IMG_TO_PDF, label: "Image → PDF", icon: "🖼️" },
-            { id: MODES.PDF_TO_IMG, label: "PDF → Image", icon: "📄" },
-          ].map((t) => (
-            <button
-              key={t.id}
-              onClick={() => handleModeSwitch(t.id)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                mode === t.id ? "tab-active text-white" : "text-white/40 hover:text-white/70"
-              }`}
-            >
-              <span>{t.icon}</span>
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Drop Zone */}
-        <div
-          className={`drop-zone border-2 border-dashed border-white/10 rounded-xl p-8 text-center cursor-pointer mb-6 relative ${dragOver ? "drop-active" : ""}`}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={onDrop}
-          onClick={() => inputRef.current?.click()}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept={accept}
-            multiple={mode === MODES.IMG_TO_PDF}
-            className="hidden"
-            onChange={onFileChange}
-          />
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-2xl">
-              {mode === MODES.IMG_TO_PDF ? "🖼️" : "📄"}
-            </div>
-            <div>
-              <p className="text-white/70 text-sm font-medium">
-                Drop {mode === MODES.IMG_TO_PDF ? "images" : "a PDF"} here
-              </p>
-              <p className="text-white/30 text-xs mt-1">
-                or <span className="text-violet-400 underline underline-offset-2">browse files</span>
-                {mode === MODES.IMG_TO_PDF ? " · JPG, PNG, WebP · multiple allowed" : " · PDF only"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Settings Row */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          {mode === MODES.IMG_TO_PDF ? (
-            <label className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-              <span className="text-xs text-white/50 uppercase tracking-wider">Quality</span>
-              <div className="flex items-center gap-2 flex-1">
-                <input
-                  type="range" min={50} max={100} step={1}
-                  value={quality}
-                  onChange={(e) => setQuality(+e.target.value)}
-                  className="flex-1 accent-violet-500"
-                />
-                <span className="text-violet-300 text-sm font-semibold w-8 text-right">{quality}%</span>
-              </div>
-            </label>
-          ) : (
-            <label className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-              <span className="text-xs text-white/50 uppercase tracking-wider">Resolution</span>
-              <div className="flex gap-2">
-                {[1, 1.5, 2, 3].map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setScale(s)}
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                      scale === s ? "tab-active text-white" : "bg-white/5 text-white/40 hover:text-white/70"
-                    }`}
-                  >
-                    {s}×
-                  </button>
-                ))}
-              </div>
-            </label>
-          )}
-        </div>
-
-        {/* Preview Thumbnails (img→pdf) */}
-        {previews.length > 0 && (
-          <div className="mb-6 fade-up">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-white/50 uppercase tracking-wider">{previews.length} image{previews.length > 1 ? "s" : ""} selected</span>
-              <button onClick={reset} className="text-xs text-red-400/70 hover:text-red-400 transition-colors">✕ Clear</button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {previews.map((url, i) => (
-                <div key={i} className="thumb relative group rounded-lg overflow-hidden border border-white/10" style={{ width: 72, height: 72 }}>
-                  <img src={url} alt="" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">{i + 1}</span>
-                  </div>
+          <div className="fc-mode-group">
+            {[
+              { id: MODES.IMG_TO_PDF, icon: "🖼", title: "Images → PDF", sub: "Combine JPG, PNG, WebP" },
+              { id: MODES.PDF_TO_IMG, icon: "📄", title: "PDF → Images", sub: "Extract pages as JPEG" },
+            ].map((m) => (
+              <button
+                key={m.id}
+                className={`fc-mode-btn${mode === m.id ? " active" : ""}`}
+                onClick={() => handleModeSwitch(m.id)}
+              >
+                <div className="fc-mode-icon">{m.icon}</div>
+                <div>
+                  <div className="fc-mode-text-title">{m.title}</div>
+                  <div className="fc-mode-text-sub">{m.sub}</div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* PDF file selected */}
-        {mode === MODES.PDF_TO_IMG && files.length > 0 && (
-          <div className="mb-6 fade-up flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3 border border-white/10">
-            <span className="text-2xl">📄</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-white/80 font-medium truncate">{files[0].name}</p>
-              <p className="text-xs text-white/30">{(files[0].size / 1024).toFixed(1)} KB</p>
-            </div>
-            <button onClick={reset} className="text-xs text-red-400/70 hover:text-red-400 transition-colors">✕</button>
-          </div>
-        )}
-
-        {/* Error */}
-        {status === "error" && (
-          <div className="mb-6 fade-up bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 text-sm text-red-300">
-            ⚠️ {errorMsg}
-          </div>
-        )}
-
-        {/* Convert Button */}
-        <button
-          onClick={handleConvert}
-          disabled={!files.length || status === "loading"}
-          className="btn-primary w-full py-4 rounded-xl font-semibold text-sm tracking-wide flex items-center justify-center gap-2 disabled:opacity-40"
-        >
-          {status === "loading" ? (
-            <>
-              <svg className="spinner w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                <circle cx="12" cy="12" r="10" strokeDasharray="32" strokeDashoffset="8" />
-              </svg>
-              Converting…
-            </>
-          ) : (
-            <>
-              ⚡ Convert {mode === MODES.IMG_TO_PDF ? "to PDF" : "to Images"}
-            </>
-          )}
-        </button>
-
-        {/* Done state – img→pdf */}
-        {status === "done" && mode === MODES.IMG_TO_PDF && (
-          <div className="mt-5 fade-up text-center">
-            <div className="inline-flex flex-col items-center gap-2">
-              <span className="text-3xl">✅</span>
-              <p className="text-sm text-white/70">PDF downloaded successfully!</p>
-              <button onClick={reset} className="text-xs text-violet-400 hover:underline">Convert more files</button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Output Images – pdf→img */}
-      {outputImages.length > 0 && (
-        <div className="relative z-10 w-full max-w-2xl mt-6 bg-card border-grad rounded-2xl p-6 md:p-8 fade-up">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="title-font text-lg font-bold text-white/90">Converted Pages</h2>
-              <p className="text-xs text-white/40 mt-0.5">{outputImages.length} page{outputImages.length > 1 ? "s" : ""} extracted</p>
-            </div>
-            <button
-              onClick={downloadAll}
-              className="btn-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5"
-            >
-              ⬇ Download All
-            </button>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {outputImages.map((img) => (
-              <div key={img.pageNum} className="thumb group relative rounded-xl overflow-hidden border border-white/10 cursor-pointer aspect-[3/4]" onClick={() => downloadImage(img.dataUrl, img.pageNum)}>
-                <img src={img.dataUrl} alt={`Page ${img.pageNum}`} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1">
-                  <span className="text-xl">⬇</span>
-                  <span className="text-xs text-white font-medium">Page {img.pageNum}</span>
+                <div className="fc-mode-check">
+                  <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" /></svg>
                 </div>
-                <div className="absolute top-2 left-2 badge rounded-full px-2 py-0.5 text-xs text-violet-300">
-                  p.{img.pageNum}
-                </div>
-              </div>
+              </button>
             ))}
           </div>
-          <div className="mt-4 text-center">
-            <button onClick={reset} className="text-xs text-violet-400 hover:underline">Convert another file</button>
-          </div>
-        </div>
-      )}
 
-      {/* Footer */}
-      <p className="relative z-10 mt-10 text-xs text-white/20 text-center">
-        All processing happens in your browser · No files are uploaded anywhere
-      </p>
+          <div className="fc-divider" />
+
+          <p className="fc-section-label">Settings</p>
+          <div className="fc-settings-group">
+            {isImg2Pdf ? (
+              <div className="fc-setting-item">
+                <div className="fc-setting-row">
+                  <span className="fc-setting-name">Output Quality</span>
+                  <span className="fc-setting-val">{quality}%</span>
+                </div>
+                <input
+                  type="range"
+                  className="fc-slider"
+                  min={50}
+                  max={100}
+                  step={1}
+                  value={quality}
+                  onChange={(e) => setQuality(+e.target.value)}
+                />
+              </div>
+            ) : (
+              <div className="fc-setting-item">
+                <div className="fc-setting-row">
+                  <span className="fc-setting-name">Resolution Scale</span>
+                  <span className="fc-setting-val">{scale}×</span>
+                </div>
+                <div className="fc-res-group">
+                  {[1, 1.5, 2, 3].map((s) => (
+                    <button
+                      key={s}
+                      className={`fc-res-btn${scale === s ? " active" : ""}`}
+                      onClick={() => setScale(s)}
+                    >
+                      {s}×
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* File chip for PDF */}
+          {!isImg2Pdf && files.length > 0 && (
+            <div className="fc-file-chip">
+              <span className="fc-file-chip-icon">📄</span>
+              <div className="fc-file-chip-info">
+                <div className="fc-file-chip-name">{files[0].name}</div>
+                <div className="fc-file-chip-size">{(files[0].size / 1024).toFixed(1)} KB</div>
+              </div>
+              <button className="fc-chip-clear" onClick={reset}>✕</button>
+            </div>
+          )}
+
+          {status === "error" && (
+            <div className="fc-error">⚠ {errorMsg}</div>
+          )}
+
+          <button
+            className="fc-convert-btn"
+            onClick={handleConvert}
+            disabled={!files.length || status === "loading"}
+          >
+            {status === "loading" ? (
+              <>
+                <div className="fc-spinner" />
+                Converting…
+              </>
+            ) : (
+              <>
+                <span className="fc-convert-btn-accent">⚡</span>
+                {isImg2Pdf ? "Convert to PDF" : "Convert to Images"}
+              </>
+            )}
+          </button>
+        </aside>
+
+        {/* ── RIGHT PANEL ── */}
+        <main className="fc-right">
+          <div className="fc-right-header">
+            <div>
+              <div className="fc-right-title">
+                {isImg2Pdf ? (
+                  <>Drop your <em>images</em></>
+                ) : (
+                  <>Drop your <em>PDF</em></>
+                )}
+              </div>
+              <div className="fc-right-subtitle">
+                {isImg2Pdf
+                  ? "Add one or multiple images. Drag to reorder."
+                  : "One PDF at a time. Each page becomes an image."}
+              </div>
+            </div>
+          </div>
+
+          <div className="fc-dropzone-wrap">
+            {/* Drop zone */}
+            <div
+              className={`fc-dropzone${dragOver ? " over" : ""}`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={onDrop}
+              onClick={() => inputRef.current?.click()}
+            >
+              <input
+                ref={inputRef}
+                type="file"
+                accept={accept}
+                multiple={isImg2Pdf}
+                style={{ display: "none" }}
+                onChange={onFileChange}
+              />
+              <div className="fc-dropzone-icon-wrap">
+                {isImg2Pdf ? "🖼" : "📄"}
+              </div>
+              <div className="fc-dropzone-title">
+                Drag & drop {isImg2Pdf ? "images" : "a PDF"} here
+              </div>
+              <div className="fc-dropzone-sub">
+                or <span>click to browse</span>
+              </div>
+              <div className="fc-dropzone-formats">
+                {isImg2Pdf ? (
+                  ["JPG", "PNG", "WebP"].map((f) => (
+                    <span key={f} className="fc-format-tag">{f}</span>
+                  ))
+                ) : (
+                  <span className="fc-format-tag">PDF</span>
+                )}
+              </div>
+            </div>
+
+            {/* Image previews */}
+            {isImg2Pdf && previews.length > 0 && (
+              <div className="fc-previews">
+                <div className="fc-previews-header">
+                  <span className="fc-previews-count">{previews.length} image{previews.length !== 1 ? "s" : ""} ready</span>
+                  <button className="fc-clear-link" onClick={reset}>Clear all</button>
+                </div>
+                <div className="fc-thumb-grid">
+                  {previews.map((url, i) => (
+                    <div key={i} className="fc-thumb">
+                      <img src={url} alt="" />
+                      <span className="fc-thumb-num">{i + 1}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Done: img→pdf */}
+            {status === "done" && isImg2Pdf && (
+              <div className="fc-done">
+                <div className="fc-done-check">
+                  <svg viewBox="0 0 24 24"><polyline points="4,12 9,17 20,7" /></svg>
+                </div>
+                <div className="fc-done-title">PDF Ready!</div>
+                <div className="fc-done-sub">Your file has been downloaded.</div>
+                <button className="fc-done-reset" onClick={reset}>Convert more files</button>
+              </div>
+            )}
+
+            {/* Output: pdf→img */}
+            {outputImages.length > 0 && (
+              <>
+                <div className="fc-output-actions">
+                  <span className="fc-previews-count">{outputImages.length} page{outputImages.length !== 1 ? "s" : ""} extracted</span>
+                  <button className="fc-dl-all-btn" onClick={downloadAll}>
+                    ↓ Download All
+                  </button>
+                </div>
+                <div className="fc-output-grid">
+                  {outputImages.map((img) => (
+                    <div
+                      key={img.pageNum}
+                      className="fc-output-card"
+                      onClick={() => downloadImage(img.dataUrl, img.pageNum)}
+                    >
+                      <img src={img.dataUrl} alt={`Page ${img.pageNum}`} />
+                      <div className="fc-output-overlay">
+                        <span className="fc-output-overlay-icon">↓</span>
+                        <span className="fc-output-overlay-label">Download</span>
+                      </div>
+                      <span className="fc-page-badge">P{img.pageNum}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: 16, textAlign: "center" }}>
+                  <button className="fc-done-reset" onClick={reset}>Convert another file</button>
+                </div>
+              </>
+            )}
+
+            {/* Empty state when no files and not done */}
+            {!previews.length && !outputImages.length && status !== "done" && (
+              <div className="fc-empty-state">
+                <div className="fc-empty-icon">
+                  {isImg2Pdf ? "🖼" : "📄"}
+                </div>
+                <div className="fc-empty-text">
+                  {isImg2Pdf
+                    ? "Your image previews will appear here"
+                    : "Extracted pages will appear here"}
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
