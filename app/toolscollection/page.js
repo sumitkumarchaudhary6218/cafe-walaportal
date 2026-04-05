@@ -66,6 +66,17 @@ const tools = [
         url: "/imageCompressor"
     },
     {
+        id: 9,
+        title: "PDF Compressor",
+        description: "Reduce PDF file size without losing quality. Ideal for uploading and sharing.",
+        category: "tools",
+        bg: "from-indigo-50 to-blue-100",
+        accent: "#4F46E5",
+        emoji: "📉",
+        badge: "Popular",
+        url: "/kbpdfresizer"
+    },
+    {
         id: 6,
         title: "PDF to JPG",
         description: "Convert PDF pages into high-quality JPG images quickly. Extract images from PDF files for easy use, sharing, or editing.",

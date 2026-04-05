@@ -45,7 +45,7 @@ const DigitalToolsBox = () => {
         {/* Button */}
         <button
           onClick={handleRoute}
-          className="mt-3 bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm font-semibold py-2 px-6 rounded-lg transition-all duration-200 hover:opacity-90 hover:-translate-y-[1px]"
+          className="mt-3  cursor-pointer bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm font-semibold py-2 px-6 rounded-lg transition-all duration-200 hover:opacity-90 hover:-translate-y-[1px]"
         >
           Open Tools →
         </button>
