@@ -13,29 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "SevaUpdates | RTPS Bihar, Caste & Income Certificate Services",
-  description:
-    "SevaUpdates पर RTPS Bihar सेवाएं जैसे जाति प्रमाण पत्र, आय प्रमाण पत्र और आवेदन की स्थिति ऑनलाइन देखें।",
+  title: "SevaUpdates |Cyber Cafe Wala  ",
 
-  keywords: [
-    "sevaupdates",
-    "RTPS Bihar",
-    "caste certificate online",
-    "income certificate bihar",
-    "online service bihar",
-  ],
 
-  openGraph: {
-    title: "SevaUpdates",
-    description: "सभी सरकारी सेवाएं एक जगह",
-    url: "https://sevaupdates.com",
-    siteName: "SevaUpdates",
-    type: "website",
-  },
 
-  alternates: {
-    canonical: "https://sevaupdates.com",
-  },
+
+
 };
 
 export default function RootLayout({ children }) {
@@ -59,37 +42,9 @@ export default function RootLayout({ children }) {
           }}
         />
 
-        {/* 🔥 ITEM LIST (RTPS SERVICES) */}
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "ItemList",
-              itemListElement: [
-                {
-                  "@type": "ListItem",
-                  position: 1,
-                  name: "आवेदन की स्थिति देखें",
-                  url: "https://sevaupdates.com/pancard",
-                },
-                {
-                  "@type": "ListItem",
-                  position: 2,
-                  name: "जाति प्रमाण-पत्र",
-                  url: "https://sevaupdates.com/caste-certificate",
-                },
-                {
-                  "@type": "ListItem",
-                  position: 3,
-                  name: "आय प्रमाण-पत्र",
-                  url: "https://sevaupdates.com/income-certificate",
-                },
-              ],
-            }),
-          }}
-        />
+
+
 
         {/* ✅ Wrapper */}
         <WrapperLayout>

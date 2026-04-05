@@ -38,7 +38,7 @@ const latestDownloads = [
 
 const latestDownloadCourse = [
   { id: 1, text: "Cyber Cafe कैसे खोलें (2026 Guide)", url: "/cybercafe" },
-  { id: 2, text: "Cyber Cafe के लिये कौन-कौन से ID लें।", url: "#" },
+  { id: 2, text: "Cyber Cafe के लिये कौन-कौन से ID लें।", url: "/CyberCafeid" },
   { id: 3, text: "Cyber Cafe के लिये बेस्ट प्रिंटर कौन रहेगा।", url: "#" },
   { id: 4, text: " Cyber Cafe के लिये बेस्ट Lamination और मशीन कौन रहेगा!", url: "#" },
   { id: 5, text: "Cyber Cafe के लिये बेस्ट Biometric-Device/mantra vs/morpho?", url: "#" },
