@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@imgly/background-removal": "^1.7.0",
+    "@mui/icons-material": "^7.3.9",
     "@tensorflow-models/body-pix": "^2.2.1",
     "@tensorflow/tfjs": "^4.22.0",
     "framer-motion": "^12.35.0",

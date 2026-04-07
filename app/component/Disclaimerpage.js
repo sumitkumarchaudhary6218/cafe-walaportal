@@ -46,6 +46,17 @@ const latestDownloadCourse = [
 
   { id: 7, text: "Cyber Cafe के लिये बेस्ट Location कहा रहेगा!", url: "#" },
   { id: 8, text: "Cyber Cafe के लिये कितना रुपया लगेगा! 2026 में", url: "#" },
+  { id: 9, text: "TEC Certificate कैसे लें", url: "#" },
+  { id: 10, text: "LMS ID Password कैसे लें", url: "#" },
+  { id: 11, text: "CSC ID कैसे लें", url: "#" },
+  { id: 12, text: "Bank BC कैसे लें", url: "#" },
+  { id: 13, text: "Aadhaar Centre कैसे खोले", url: "#" },
+  { id: 14, text: "IRCTC Agent ID कैसे लें", url: "#" },
+  { id: 15, text: "Voter ID Registration कैसे करें", url: "#" },
+  { id: 16, text: "Ayushman Card Operator ID कैसे लें", url: "#" },
+  { id: 17, text: "Airtel Mitra ID कैसे लें / Jio POS Plus ID कैसे लें", url: "#" },
+  { id: 18, text: "Airtel Payment Bank CSP ID कैसे लें", url: "#" },
+  { id: 19, text: "AEPS ID कैसे लें", url: "#" },
 ];
 
 const colorVariants = {
