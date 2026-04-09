@@ -47,7 +47,6 @@ const IDCardPrintTool = () => {
 
     const handleDownloadPDF = async () => {
         const element = document.getElementById("print-area");
-
         if (!element) return;
 
         const canvas = await html2canvas(element, {
@@ -56,7 +55,6 @@ const IDCardPrintTool = () => {
         });
 
         const imgData = canvas.toDataURL("image/png");
-
         const pdf = new jsPDF("p", "mm", "a4");
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -65,16 +63,15 @@ const IDCardPrintTool = () => {
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save("id-card.pdf");
     };
+
     return (
         <>
-            {/* CSS for Exact A4 Printing */}
+            {/* PRINT CSS */}
             <style jsx global>{`
                 @media print {
-                    /* Hide UI elements */
                     body * {
                         visibility: hidden;
                     }
-                    /* Show only print area */
                     #print-area, #print-area * {
                         visibility: visible;
                     }
@@ -93,14 +90,14 @@ const IDCardPrintTool = () => {
                     .print-card-container {
                         display: flex !important;
                         flex-direction: row !important;
-                        gap: 5mm !important;
+                        gap: 4mm !important;
                         margin-bottom: 5mm !important;
                         page-break-inside: avoid;
                     }
-                    /* Standard ID Card Size: 85.6mm x 54mm */
+                    /* ✅ UPDATED SIZE */
                     .print-image-slot {
-                        width: 85.6mm !important;git 
-                        height: 55mm !important;
+                        width: 95mm !important;
+                        height: 60mm !important;
                         border: 0.1mm solid #000 !important;
                         -webkit-print-color-adjust: exact;
                     }
@@ -112,6 +109,7 @@ const IDCardPrintTool = () => {
             `}</style>
 
             <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-700">
+
                 {/* Top Badge */}
                 <div className="flex justify-center mb-4 print:hidden">
                     <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-sm">
@@ -119,7 +117,7 @@ const IDCardPrintTool = () => {
                     </span>
                 </div>
 
-                {/* Header Section */}
+                {/* Header */}
                 <header className="text-center mb-8 print:hidden">
                     <div className="flex items-center justify-center gap-2 mb-2">
                         <div className="bg-blue-600 p-1 rounded shadow-lg">
@@ -136,7 +134,7 @@ const IDCardPrintTool = () => {
 
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                    {/* LEFT COLUMN: Controls */}
+                    {/* LEFT */}
                     <div className="lg:col-span-5 space-y-6 print:hidden">
                         <button
                             onClick={addNewCard}
@@ -179,15 +177,10 @@ const IDCardPrintTool = () => {
                         </section>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <button
-                                onClick={handlePrint}
-                                className="bg-emerald-500 cursor-pointer hover:bg-emerald-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors"
-                            >
+                            <button onClick={handlePrint} className="bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
                                 <Printer size={16} /> Print Now
                             </button>
-                            <button
-                                onClick={handleDownloadPDF}
-                                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
+                            <button onClick={handleDownloadPDF} className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
                                 <FileText size={16} /> Download PDF
                             </button>
                         </div>
@@ -197,7 +190,7 @@ const IDCardPrintTool = () => {
                         </button>
                     </div>
 
-                    {/* RIGHT COLUMN: Preview & PRINT AREA */}
+                    {/* RIGHT */}
                     <div className="lg:col-span-7">
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col">
                             <div className="p-4 border-b border-slate-100 flex justify-between items-center print:hidden">
@@ -208,7 +201,6 @@ const IDCardPrintTool = () => {
                                 <span className="text-[10px] font-mono text-slate-400 uppercase">A4 Page Layout</span>
                             </div>
 
-                            {/* Print Container */}
                             <div className="flex-1 p-5 bg-slate-100/50 flex items-start justify-center overflow-auto">
                                 <div
                                     id="print-area"
@@ -219,10 +211,11 @@ const IDCardPrintTool = () => {
                                         {cards.map((card) => (
                                             <div
                                                 key={card.id}
-                                                className="print-card-container flex flex-row gap-6 mb-6"
+                                                className="print-card-container flex flex-row gap-3 mb-6"
                                             >
-                                                {/* Front Slot */}
-                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+
+                                                {/* FRONT */}
+                                                <div className="print-image-slot w-[320px] h-[200px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
                                                     {card.front ? (
                                                         <img src={card.front} className="w-full h-full object-fill" alt="Front" />
                                                     ) : (
@@ -232,8 +225,8 @@ const IDCardPrintTool = () => {
                                                     )}
                                                 </div>
 
-                                                {/* Back Slot */}
-                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+                                                {/* BACK */}
+                                                <div className="print-image-slot w-[320px] h-[200px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
                                                     {card.back ? (
                                                         <img src={card.back} className="w-full h-full object-fill" alt="Back" />
                                                     ) : (
@@ -242,6 +235,7 @@ const IDCardPrintTool = () => {
                                                         </span>
                                                     )}
                                                 </div>
+
                                             </div>
                                         ))}
                                     </div>
@@ -250,14 +244,14 @@ const IDCardPrintTool = () => {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <EditCardModal
-                isOpen={isModalOpen}
-                cardData={activeCard}
-                onClose={() => setIsModalOpen(false)}
-                onSave={handleSaveCard}
-            />
+                <EditCardModal
+                    isOpen={isModalOpen}
+                    cardData={activeCard}
+                    onClose={() => setIsModalOpen(false)}
+                    onSave={handleSaveCard}
+                />
+            </div>
         </>
     );
 };

@@ -41,7 +41,7 @@ const latestDownloadCourse = [
   { id: 2, text: "Cyber Cafe के लिये कौन-कौन से ID लें।", url: "/CyberCafeid" },
   { id: 3, text: "Cyber Cafe के लिये बेस्ट प्रिंटर कौन रहेगा।", url: "/printerguide" },
   { id: 4, text: " Cyber Cafe के लिये बेस्ट Lamination और मशीन कौन रहेगा!", url: "#" },
-  { id: 5, text: "Cyber Cafe के लिये बेस्ट Biometric-Device/mantra vs/morpho?", url: "#" },
+  { id: 5, text: "Cyber Cafe के लिये बेस्ट Biometric-Device/mantra vs/morpho?", url: "/biometricpage" },
   { id: 6, text: "Cyber Cafe के लिये बेस्ट Photo-Paper और Paper-कागज कौन रहेगा।", url: "#" },
 
   { id: 7, text: "Cyber Cafe के लिये बेस्ट Location कहा रहेगा!", url: "#" },
