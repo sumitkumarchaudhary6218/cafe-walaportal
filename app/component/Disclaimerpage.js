@@ -41,13 +41,13 @@ const latestDownloadCourse = [
   { id: 1, text: "Cyber Cafe कैसे खोलें (2026 Guide)", url: "/cybercafe" },
   { id: 2, text: "Cyber Cafe के लिये कौन-कौन से ID लें।", url: "/CyberCafeid" },
   { id: 3, text: "Cyber Cafe के लिये बेस्ट प्रिंटर कौन रहेगा।", url: "/printerguide" },
-  { id: 4, text: " Cyber Cafe के लिये बेस्ट Lamination और मशीन कौन रहेगा!", url: "#" },
+  { id: 4, text: " Cyber Cafe के लिये बेस्ट Lamination और मशीन कौन रहेगा!", url: "/laminationguide" },
   { id: 5, text: "Cyber Cafe के लिये बेस्ट Biometric-Device/mantra vs/morpho?", url: "/biometricpage" },
   { id: 6, text: "Cyber Cafe के लिये बेस्ट Photo-Paper और Paper-कागज कौन रहेगा।", url: "/guidepapper" },
   { id: 7, text: "Cyber Cafe के लिये बेस्ट Location कहा रहेगा!", url: "/locationguide" },
-  { id: 8, text: "Cyber Cafe के लिये कितना रुपया लगेगा! 2026 में", url: "#" },
-  { id: 9, text: "TEC Certificate कैसे लें", url: "#" },
-  { id: 10, text: "LMS ID Password कैसे लें", url: "#" },
+  { id: 8, text: "Cyber Cafe के लिये कितना रुपया लगेगा! 2026 में", url: "/budgetguide" },
+  { id: 9, text: "TEC Certificate कैसे लें", url: "/tecguide" },
+  { id: 10, text: "LMS ID Password कैसे लें", url: "/lmsguide" },
   { id: 11, text: "CSC ID कैसे लें", url: "#" },
   { id: 12, text: "Bank BC कैसे लें", url: "#" },
   { id: 13, text: "Aadhaar Centre कैसे खोले", url: "#" },
@@ -123,7 +123,7 @@ function SectionCard({ title, items, accentColor, isExpanded, onToggle, onItemCl
         ))}
       </div>
 
-      <div className={`px-4 py-2 text-center border-t ${colors.footer}`}>
+      <div className={`px-4 py-2 text-center ${colors.footer}`}>
         <button onClick={onToggle} className={`text-xs font-semibold ${colors.text}`}>
           {isExpanded ? "← Back" : "View All →"}
         </button>
