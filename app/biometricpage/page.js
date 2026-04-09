@@ -1,289 +1,267 @@
-"use client";
-import { useState } from "react";
+import React from 'react';
+import { 
+  Fingerprint, 
+  CheckCircle2, 
+  XCircle, 
+  AlertCircle, 
+  ShoppingBag, 
+  ArrowRight, 
+  Star,
+  Info,
+  BadgeIndianRupee
+} from 'lucide-react';
 
-const features = [
-  { label: "Driver Setup", mantra: "एक ही Driver", morpho: "अलग-अलग Driver" },
-  { label: "उपयोग", mantra: "बहुत आसान", morpho: "थोड़ा कठिन" },
-  { label: "कीमत", mantra: "₹2700–₹3000", morpho: "₹4500–₹5000" },
-  { label: "Beginner Friendly", mantra: "✅ हाँ", morpho: "❌ नहीं" },
-  { label: "PAN Card", mantra: "✅ एक driver से", morpho: "❌ अलग driver" },
-  { label: "eKYC / AEPS", mantra: "✅ एक driver से", morpho: "❌ अलग driver" },
-];
-
-const mantraFeatures = [
-  "सिर्फ एक ही Driver Install करना होता है",
-  "PAN Card Apply, eKYC, Pension, Farmer KYC सब एक driver से",
-  "AEPS Withdrawal बिना किसी परेशानी के",
-  "Beginners के लिए Perfect Setup",
-  "Time और दिमाग दोनों बचता है",
-];
-
-const morphoIssues = [
-  "हर काम के लिए अलग-अलग Driver",
-  "PAN Card के लिए अलग driver",
-  "e-Shram के लिए अलग driver",
-  "AEPS के लिए अलग driver",
-  "बार-बार setup करना पड़ता है",
-];
-
-const steps = [
-  { icon: "🛒", title: "सही Device लें", desc: "Mantra Device खरीदें — सस्ता और आसान" },
-  { icon: "💻", title: "Driver Install करें", desc: "सिर्फ एक बार install करें, सब ready" },
-  { icon: "👥", title: "ज्यादा Customer", desc: "Fast work से ज्यादा customers आएंगे" },
-  { icon: "💸", title: "अच्छी कमाई", desc: "ज्यादा income, बिना tension के" },
-];
-
-export default function BiometricPage() {
-  const [activeTab, setActiveTab] = useState("mantra");
-
+export default function BiometricGuide() {
   return (
-    <div className="min-h-screen bg-[#0A0E1A] text-white font-sans overflow-x-hidden">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
-        body { font-family: 'Baloo 2', 'Noto Sans Devanagari', sans-serif; }
-        .glow-green { box-shadow: 0 0 30px rgba(34,197,94,0.25), 0 0 60px rgba(34,197,94,0.1); }
-        .glow-red { box-shadow: 0 0 30px rgba(239,68,68,0.2), 0 0 60px rgba(239,68,68,0.08); }
-        .card-glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
-        .badge-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
-        .shimmer { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); background-size: 200%; animation: shimmer 2.5s infinite; }
-        @keyframes shimmer { 0%{background-position:200%} 100%{background-position:-200%} }
-        .tab-active { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-        .tab-inactive { background: rgba(255,255,255,0.06); color: #9ca3af; }
-        .float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-      `}</style>
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+      
+      {/* --- Sticky Header --- */}
+      <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 p-4 shadow-sm">
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Fingerprint className="text-blue-600 w-6 h-6" />
+            <span className="font-bold text-lg hidden sm:block">Cyber Cafe Guide</span>
+          </div>
+          <div className="text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full uppercase tracking-wider">
+            Edition 2026
+          </div>
+        </div>
+      </header>
 
-      {/* Hero Section */}
-      <section className="relative grid-bg pt-16 pb-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-900/20 via-transparent to-transparent pointer-events-none" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <span className="inline-block bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 badge-pulse tracking-widest uppercase">
-            2026 Guide • Cyber Cafe
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-5 tracking-tight">
-            Best{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
-              Biometric Device
-            </span>
-            <br />
-            Cyber Cafe के लिए
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        
+        {/* --- Hero Section --- */}
+        <section className="mb-12">
+          <h1 className="text-3xl md:text-4xl font-black leading-tight mb-6 text-slate-800">
+            💻 Cyber Cafe के लिए <span className="text-blue-600">Best Biometric Device 2026</span> | Mantra vs Morpho Full Guide
           </h1>
-          <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-8">
-            Mantra vs Morpho — कौन सा device आपके Jan Seva Kendra या CSC Center के लिए सबसे बेहतर है? पूरी जानकारी यहाँ।
+          
+          <div className="bg-blue-600 text-white p-5 rounded-2xl shadow-lg mb-8 flex items-start gap-4">
+            <div className="bg-white/20 p-2 rounded-lg">
+              <Info className="w-6 h-6" />
+            </div>
+            <p className="text-lg font-medium leading-relaxed">
+              📢 अगर आप भी Cyber Cafe चलाते हैं तो ये आर्टिकल आपके लिए बहुत जरूरी है!
+            </p>
+          </div>
+
+          <p className="text-lg text-slate-600 leading-relaxed mb-6">
+            दोस्तों, अगर आप एक Cyber Cafe, CSC Center या Jan Seva Kendra चलाते हैं या खोलने की सोच रहे हैं, तो आज का ये आर्टिकल आपके लिए बहुत ही काम का होने वाला है। आज हम बात करने वाले हैं कि आपके Cyber Cafe के लिए सबसे <strong>Best Biometric Fingerprint Device</strong> कौन सा रहेगा।
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://fktr.in/iEJHstc"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-3.5 rounded-xl transition-all duration-200 hover:scale-105 glow-green text-base"
-            >
-              🛒 Mantra Device खरीदें
-            </a>
-            <a
-              href="#compare"
-              className="border border-white/20 hover:border-white/40 text-white px-8 py-3.5 rounded-xl transition-all duration-200 hover:bg-white/5 text-base"
-            >
-              📊 Comparison देखें
-            </a>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Device Cards */}
-      <section className="py-14 px-4" id="compare">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10">
-            दोनों Devices की{" "}
-            <span className="text-green-400">तुलना</span>
+        {/* --- Market Overview --- */}
+        <section className="mb-12 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
+            🔍 भारत में कौन-कौन सी Biometric Device Companies आती हैं?
           </h2>
-
-          {/* Tab Switcher */}
-          <div className="flex gap-3 justify-center mb-8">
-            <button
-              onClick={() => setActiveTab("mantra")}
-              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${activeTab === "mantra" ? "tab-active" : "tab-inactive"}`}
-            >
-              🟢 Mantra Device
-            </button>
-            <button
-              onClick={() => setActiveTab("morpho")}
-              className={`px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${activeTab === "morpho" ? "bg-red-500/80 text-white" : "tab-inactive"}`}
-            >
-              🔴 Morpho Device
-            </button>
+          <p className="text-slate-600 mb-6">भारत में मुख्य रूप से अनेक कंपनियां आती हैं, लेकिन आज हम केवल उन दो कंपनियों पर फोकस करेंगे जो सबसे ज्यादा मार्केट में चलती हैं:</p>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 bg-slate-100 rounded-xl font-bold text-center border-2 border-transparent hover:border-blue-500 transition-all cursor-default text-xl">
+              👉 Mantra
+            </div>
+            <div className="p-4 bg-slate-100 rounded-xl font-bold text-center border-2 border-transparent hover:border-blue-500 transition-all cursor-default text-xl">
+              👉 Morpho
+            </div>
           </div>
+        </section>
 
-          {/* Tab Content */}
-          {activeTab === "mantra" && (
-            <div className="card-glass rounded-2xl p-6 sm:p-8 glow-green mb-8 transition-all duration-300">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-3xl float">🟢</span>
-                    <h3 className="text-2xl font-bold text-green-400">Mantra Device</h3>
-                    <span className="bg-green-500/20 text-green-300 text-xs px-3 py-1 rounded-full border border-green-500/30 font-semibold">RECOMMENDED</span>
-                  </div>
-                  <p className="text-gray-400 text-sm">Cyber Cafe के लिए #1 Choice</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-extrabold text-green-400">₹2,700</div>
-                  <div className="text-gray-400 text-sm">से शुरू</div>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                {mantraFeatures.map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm sm:text-base text-gray-200">
-                    <span className="mt-0.5 text-green-400 text-lg flex-shrink-0">✅</span>
-                    <span>{f}</span>
+        {/* --- Mantra Section (Green Theme) --- */}
+        <section className="mb-10">
+          <div className="bg-emerald-50 border-2 border-emerald-500 rounded-3xl overflow-hidden shadow-md">
+            <div className="bg-emerald-500 text-white p-4 flex items-center gap-2">
+               <CheckCircle2 className="w-6 h-6" />
+               <h2 className="text-xl font-bold">🟢 Mantra Biometric Device – क्यों है बेस्ट?</h2>
+            </div>
+            <div className="p-6">
+              <p className="font-semibold text-emerald-800 mb-6 text-lg italic">"Mantra Device Cyber Cafe वालों के लिए सबसे ज्यादा आसान और उपयोगी है।"</p>
+              
+              <h3 className="font-bold text-lg mb-4 text-emerald-900 underline decoration-emerald-200 underline-offset-4">✅ Mantra Device की खास बातें:</h3>
+              <ul className="space-y-4 mb-8">
+                {[
+                  "सिर्फ एक ही Driver Install करना होता है",
+                  "एक बार install किया = सभी काम ready",
+                  "PAN Card Apply, eKYC, AEPS Withdrawal — सब काम एक ही driver से",
+                  "Beginner और नए Cyber Cafe वालों के लिए Perfect"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 font-medium text-slate-700">
+                    <span className="text-emerald-500 mt-1">✔️</span> {item}
                   </li>
                 ))}
               </ul>
-              <div className="mt-6">
-                <a
-                  href="https://fktr.in/iEJHstc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-green-500 hover:bg-green-400 text-black font-bold px-7 py-3 rounded-xl transition-all duration-200 hover:scale-105 shimmer w-full sm:w-auto text-center"
-                >
-                  🛒 अभी खरीदें – Best Price
-                </a>
+
+              <div className="bg-white p-4 rounded-xl border border-emerald-100 inline-flex items-center gap-3">
+                <BadgeIndianRupee className="text-emerald-600" />
+                <div>
+                  <p className="text-xs uppercase font-bold text-slate-400">अनुमानित कीमत</p>
+                  <p className="text-2xl font-black text-emerald-700">₹2700 - ₹3000</p>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+        </section>
 
-          {activeTab === "morpho" && (
-            <div className="card-glass rounded-2xl p-6 sm:p-8 glow-red mb-8 transition-all duration-300">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-3xl">🔴</span>
-                    <h3 className="text-2xl font-bold text-red-400">Morpho Device</h3>
-                    <span className="bg-red-500/20 text-red-300 text-xs px-3 py-1 rounded-full border border-red-500/30 font-semibold">NOT RECOMMENDED</span>
-                  </div>
-                  <p className="text-gray-400 text-sm">Beginners के लिए नहीं</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-extrabold text-red-400">₹4,500</div>
-                  <div className="text-gray-400 text-sm">से शुरू</div>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                {morphoIssues.map((f, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm sm:text-base text-gray-300">
-                    <span className="mt-0.5 text-red-400 text-lg flex-shrink-0">❌</span>
-                    <span>{f}</span>
+        {/* --- Morpho Section (Red Theme) --- */}
+        <section className="mb-12">
+          <div className="bg-rose-50 border-2 border-rose-500 rounded-3xl overflow-hidden shadow-md">
+            <div className="bg-rose-500 text-white p-4 flex items-center gap-2">
+               <AlertCircle className="w-6 h-6" />
+               <h2 className="text-xl font-bold">🔴 Morpho Biometric Device – जटिल और महंगा</h2>
+            </div>
+            <div className="p-6">
+              <p className="text-rose-800 mb-6 font-medium">इसमें कुछ दिक्कतें हैं जो नए लोगों के लिए परेशानी बन सकती हैं।</p>
+              
+              <h3 className="font-bold text-lg mb-4 text-rose-900">❌ Morpho Device की समस्याएं:</h3>
+              <ul className="space-y-4 mb-8">
+                {[
+                  "हर काम के लिए अलग-अलग Driver Install करना पड़ता है",
+                  "PAN Card के लिए अलग, e-Shram के लिए अलग",
+                  "AEPS के लिए अलग setup",
+                  "बार-बार setup करना पड़ता है"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 font-medium text-slate-700">
+                    <span className="text-rose-500 mt-1">❌</span> {item}
                   </li>
                 ))}
               </ul>
-              <div className="mt-6">
-                <a
-                  href="https://fktr.in/RZoyqGW"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-semibold px-7 py-3 rounded-xl transition-all duration-200 w-full sm:w-auto text-center"
-                >
-                  🛒 Morpho Device Link
-                </a>
+
+              <div className="bg-white p-4 rounded-xl border border-rose-100 inline-flex items-center gap-3">
+                <BadgeIndianRupee className="text-rose-600" />
+                <div>
+                  <p className="text-xs uppercase font-bold text-slate-400 text-rose-300">अनुमानित कीमत</p>
+                  <p className="text-2xl font-black text-rose-700">₹4500 - ₹5000</p>
+                </div>
               </div>
             </div>
-          )}
-
-          {/* Comparison Table */}
-          <div className="card-glass rounded-2xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-white/10">
-              <h3 className="font-bold text-lg">📊 Full Comparison Table</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-white/5">
-                    <th className="text-left px-5 py-3 text-gray-400 font-semibold">Feature</th>
-                    <th className="text-center px-5 py-3 text-green-400 font-semibold">🟢 Mantra</th>
-                    <th className="text-center px-5 py-3 text-red-400 font-semibold">🔴 Morpho</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {features.map((row, i) => (
-                    <tr key={i} className={`border-t border-white/5 ${i % 2 === 0 ? "bg-white/[0.02]" : ""}`}>
-                      <td className="px-5 py-3 text-gray-300 font-medium">{row.label}</td>
-                      <td className="px-5 py-3 text-center text-green-300">{row.mantra}</td>
-                      <td className="px-5 py-3 text-center text-red-300">{row.morpho}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* How It Works */}
-      <section className="py-14 px-4 bg-white/[0.02] border-y border-white/05">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-            सही Device = अच्छी{" "}
-            <span className="text-green-400">कमाई</span>
+        {/* --- Comparison Table --- */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            ⚖️ Mantra vs Morpho – कौन सा बेहतर है?
           </h2>
-          <p className="text-center text-gray-400 mb-10">4 आसान steps में अपना Cyber Cafe बढ़ाएं</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {steps.map((s, i) => (
-              <div key={i} className="card-glass rounded-2xl p-5 text-center hover:border-green-500/30 transition-all duration-200 group">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200 inline-block">{s.icon}</div>
-                <div className="text-xs text-green-400 font-bold mb-1 tracking-wider uppercase">Step {i + 1}</div>
-                <h4 className="font-bold text-base mb-2">{s.title}</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-800 text-white">
+                  <th className="p-4 font-bold border-b border-slate-700">Feature</th>
+                  <th className="p-4 font-bold border-b border-slate-700">Mantra</th>
+                  <th className="p-4 font-bold border-b border-slate-700">Morpho</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                <tr>
+                  <td className="p-4 font-bold bg-slate-50">Driver</td>
+                  <td className="p-4 text-emerald-600 font-semibold">एक ही driver</td>
+                  <td className="p-4 text-rose-600 font-semibold">अलग-अलग driver</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-bold bg-slate-50">Use</td>
+                  <td className="p-4">आसान</td>
+                  <td className="p-4">थोड़ा कठिन</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-bold bg-slate-50">Price</td>
+                  <td className="p-4 font-bold">सस्ता</td>
+                  <td className="p-4 font-bold">महंगा</td>
+                </tr>
+                <tr>
+                  <td className="p-4 font-bold bg-slate-50">Beginner Friendly</td>
+                  <td className="p-4 text-emerald-600 font-bold">✅ हाँ</td>
+                  <td className="p-4 text-rose-600 font-bold">❌ नहीं</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Final CTA */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="card-glass rounded-3xl p-8 sm:p-12 glow-green relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 to-transparent pointer-events-none rounded-3xl" />
-            <div className="relative z-10">
-              <div className="text-5xl mb-4">🏆</div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold mb-3">
-                Final Verdict
-              </h2>
-              <p className="text-gray-300 mb-2 text-base">
-                नए Cyber Cafe के लिए सिर्फ एक सही choice:
-              </p>
-              <div className="text-4xl font-extrabold text-green-400 mb-2">Mantra Device</div>
-              <p className="text-gray-400 text-sm mb-8">आसान • सस्ता • सभी काम एक driver से</p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="https://fktr.in/iEJHstc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-green-500 hover:bg-green-400 text-black font-bold px-8 py-4 rounded-xl transition-all duration-200 hover:scale-105 text-base glow-green"
-                >
-                  🛒 Mantra Device खरीदें
-                </a>
-                <a
-                  href="https://fktr.in/RZoyqGW"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="border border-white/20 hover:border-white/40 text-white px-8 py-4 rounded-xl transition-all duration-200 hover:bg-white/5 text-base"
-                >
-                  Morpho Device Link
-                </a>
-              </div>
+        {/* --- Recommendation Card --- */}
+        <section className="mb-12 bg-slate-900 text-white p-8 rounded-[2rem] shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 blur-3xl rounded-full"></div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-black mb-6 flex items-center gap-3 text-yellow-400">
+              <Star className="fill-yellow-400" />🏆 Final Recommendation
+            </h2>
+            <p className="text-xl mb-6">अगर आप नया Cyber Cafe खोल रहे हैं, तो मेरी साफ सलाह है:</p>
+            <div className="text-4xl font-black text-center mb-8 py-4 border-y border-white/10 tracking-tight">
+              👉 <span className="text-blue-400">Mantra Device</span> ही लें
+            </div>
+            
+            <div className="space-y-4">
+              {["आसान है", "सस्ता है", "सभी काम एक ही driver से", "टाइम और दिमाग दोनों बचता है"].map((text, i) => (
+                <div key={i} className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+                  <CheckCircle2 className="text-blue-400 w-5 h-5 flex-shrink-0" />
+                  <span className="font-semibold">{text}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-4 text-center text-gray-500 text-sm">
-        <p>© 2026 Cyber Cafe Guide • Jan Seva Kendra & CSC Center के लिए</p>
-        <p className="mt-1 text-xs">ऊपर दिए गए links affiliate links हो सकते हैं</p>
-      </footer>
+        {/* --- Links --- */}
+        <section className="mb-12">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">🔗 Buy Link</h2>
+          <div className="space-y-4">
+            <a href="https://fktr.in/iEJHstc" target="_blank" rel="noopener noreferrer" 
+               className="flex items-center justify-between p-5 bg-white border-2 border-emerald-500 rounded-2xl hover:bg-emerald-50 transition-all group">
+              <div className="flex items-center gap-4">
+                <ShoppingBag className="text-emerald-500 w-6 h-6" />
+                <span className="text-lg font-bold">Mantra Device Buy Link</span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-emerald-500 group-hover:translate-x-1 transition-transform" />
+            </a>
+            
+            <a href="https://fktr.in/RZoyqGW" target="_blank" rel="noopener noreferrer" 
+               className="flex items-center justify-between p-5 bg-white border-2 border-rose-500 rounded-2xl hover:bg-rose-50 transition-all group">
+              <div className="flex items-center gap-4">
+                <ShoppingBag className="text-rose-500 w-6 h-6" />
+                <span className="text-lg font-bold">Morpho Device Buy Link</span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-rose-500 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+        </section>
+
+        {/* --- Expert Advice --- */}
+        <section className="mb-12 bg-yellow-50 p-8 rounded-3xl border-2 border-dashed border-yellow-400">
+           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            💡 New Cyber Cafe वालों के लिए जरूरी सलाह
+           </h2>
+           <p className="text-slate-700 mb-6 leading-relaxed">अगर आप अभी नया Cyber Cafe या Jan Seva Kendra खोलने की सोच रहे हैं, तो शुरुआत में सही device लेना बहुत जरूरी है।</p>
+           <div className="space-y-3 font-black text-xl text-slate-800">
+             <div className="flex items-center gap-2">👉 सही device = <span className="text-blue-600 underline">Fast work</span></div>
+             <div className="flex items-center gap-2">👉 Fast work = <span className="text-blue-600 underline">ज्यादा customer</span></div>
+             <div className="flex items-center gap-2">👉 ज्यादा customer = <span className="text-blue-600 underline text-2xl font-black">ज्यादा income 💰</span></div>
+           </div>
+        </section>
+
+        {/* --- Conclusion --- */}
+        <footer className="text-center bg-white p-10 rounded-[3rem] shadow-inner border border-slate-100">
+           <h2 className="text-2xl font-black mb-6">🚀 Conclusion</h2>
+           <div className="max-w-xs mx-auto text-left space-y-3 mb-8 text-slate-600 font-medium">
+             <p>• कौन सा Biometric Device Best है</p>
+             <p>• Mantra और Morpho में क्या अंतर है</p>
+             <p>• कौन सा device ज्यादा फायदेमंद रहेगा</p>
+           </div>
+           
+           <div className="inline-block bg-emerald-100 text-emerald-700 px-8 py-4 rounded-2xl font-black text-xl mb-10 ring-4 ring-emerald-50">
+            Final Verdict: Mantra Device ✅
+           </div>
+
+           <div className="border-t pt-8">
+             <h3 className="text-xl font-bold mb-4">📢 Last Words</h3>
+             <p className="text-slate-600 leading-relaxed mb-6 font-medium">तो दोस्तों, अगर आप भी अपने Jan Seva Kendra या Cyber Cafe को आगे बढ़ाना चाहते हैं, तो सही decision लीजिए और काम को आसान बनाइए।</p>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-bold text-slate-800">
+                <div className="p-3 bg-slate-100 rounded-lg">👉 सही tool इस्तेमाल करें</div>
+                <div className="p-3 bg-slate-100 rounded-lg">👉 ज्यादा काम करें</div>
+                <div className="p-3 bg-blue-600 text-white rounded-lg shadow-md shadow-blue-200">👉 अच्छी कमाई करें 💸</div>
+             </div>
+           </div>
+        </footer>
+
+      </main>
     </div>
   );
 }
