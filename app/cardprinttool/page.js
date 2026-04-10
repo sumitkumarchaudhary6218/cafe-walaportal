@@ -1,208 +1,264 @@
 "use client";
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit3, Printer, FileText, RotateCcw, Layout, Image as ImageIcon } from 'lucide-react';
-import jsPDF from "jspdf";
+import {
+    Plus, Trash2, Edit3, Printer, FileText,
+    RotateCcw, Layout, Image as ImageIcon
+} from 'lucide-react';
 import EditCardModal from './components/EditCardModal';
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const IDCardPrintTool = () => {
-    const [cards, setCards] = useState([{ 
-        id: 1, type: 'Aadhaar Card', front: null, back: null,
-        frontFilters: { brightness: 100, contrast: 100 },
-        backFilters: { brightness: 100, contrast: 100 }
-    }]);
+    const [cards, setCards] = useState([
+        { id: 1, type: 'Aadhaar Card', front: null, back: null }
+    ]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeCard, setActiveCard] = useState(null);
-    const [isGenerating, setIsGenerating] = useState(false);
 
     const addNewCard = () => {
         if (cards.length < 5) {
-            setCards([...cards, { 
-                id: Date.now(), type: 'Aadhaar Card', front: null, back: null,
-                frontFilters: { brightness: 100, contrast: 100 },
-                backFilters: { brightness: 100, contrast: 100 }
-            }]);
+            setCards([...cards, { id: Date.now(), type: 'Aadhaar Card', front: null, back: null }]);
         }
     };
 
-    // --- PDF GENERATION WITH ROUNDED CORNERS ---
+    const removeCard = (id) => {
+        setCards(cards.filter(c => c.id !== id));
+    };
+
+    const resetAll = () => {
+        if (window.confirm("Are you sure you want to remove all cards?")) {
+            setCards([]);
+        }
+    };
+
+    const openEditModal = (card) => {
+        setActiveCard(card);
+        setIsModalOpen(true);
+    };
+
+    const handleSaveCard = (updatedCard) => {
+        setCards(cards.map(c => c.id === updatedCard.id ? updatedCard : c));
+        setIsModalOpen(false);
+    };
+
+    const handlePrint = () => {
+        window.print();
+    };
+
     const handleDownloadPDF = async () => {
-        try {
-            setIsGenerating(true);
-            const pdf = new jsPDF("p", "mm", "a4");
-            const cardW = 95, cardH = 60, mLeft = 7.5, mTop = 10, gap = 5;
-            const radius = 3; // 3mm corner radius
+        const element = document.getElementById("print-area");
 
-            const getFilteredAndRounded = (base64, f) => new Promise(res => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = img.width; canvas.height = img.height;
-                    const ctx = canvas.getContext("2d");
-                    
-                    // 1. Draw rounded rectangle path for clipping
-                    const r = (radius * img.width) / cardW; // scale radius to image pixels
-                    ctx.beginPath();
-                    ctx.moveTo(r, 0);
-                    ctx.lineTo(canvas.width - r, 0);
-                    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, r);
-                    ctx.lineTo(canvas.width, canvas.height - r);
-                    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - r, canvas.height);
-                    ctx.lineTo(r, canvas.height);
-                    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - r);
-                    ctx.lineTo(0, r);
-                    ctx.quadraticCurveTo(0, 0, r, 0);
-                    ctx.closePath();
-                    ctx.clip(); // Clip everything outside the rounded corners
+        if (!element) return;
 
-                    // 2. Apply Filters
-                    ctx.filter = `brightness(${f.brightness}%) contrast(${f.contrast}%)`;
-                    
-                    // 3. Draw Image
-                    ctx.drawImage(img, 0, 0);
-                    res(canvas.toDataURL("image/jpeg", 0.9));
-                };
-                img.src = base64;
-            });
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+        });
 
-            for (let i = 0; i < cards.length; i++) {
-                const c = cards[i];
-                const y = mTop + (i * (cardH + gap));
-                
-                if (c.front) {
-                    const img = await getFilteredAndRounded(c.front, c.frontFilters);
-                    // Use roundedRect for the border in PDF
-                    pdf.setDrawColor(180);
-                    pdf.roundedRect(mLeft, y, cardW, cardH, radius, radius, 'D');
-                    pdf.addImage(img, "JPEG", mLeft, y, cardW, cardH);
-                }
-                if (c.back) {
-                    const img = await getFilteredAndRounded(c.back, c.backFilters);
-                    const xBack = mLeft + cardW + gap;
-                    pdf.setDrawColor(180);
-                    pdf.roundedRect(xBack, y, cardW, cardH, radius, radius, 'D');
-                    pdf.addImage(img, "JPEG", xBack, y, cardW, cardH);
-                }
-            }
-            pdf.save("ID-Cards-Rounded.pdf");
-        } catch (e) { 
-            console.error(e);
-            alert("PDF Error"); 
-        } finally { 
-            setIsGenerating(false); 
-        }
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("id-card.pdf");
     };
-
-    const getFilterStyle = (f) => ({ filter: `brightness(${f?.brightness}%) contrast(${f?.contrast}%)` });
-
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8">
-            {/* --- PRINT CSS WITH ROUNDED CORNERS --- */}
+        <>
+            {/* CSS for Exact A4 Printing */}
             <style jsx global>{`
                 @media print {
-                    body * { visibility: hidden; }
-                    #print-area, #print-area * { visibility: visible; }
-                    #print-area { position: absolute; left: 0; top: 0; width: 210mm; padding: 10mm; background: white; }
-                    .print-card { display: flex; gap: 4mm; margin-bottom: 5mm; }
-                    
-                    /* ROUNDED CORNERS FOR PRINT */
-                    .slot { 
-                        width: 90mm; 
-                        height: 58mm; 
-                        border: 0.2mm solid #999 !important; 
-                        border-radius: 3mm !important; 
-                        overflow: hidden !important;
+                    /* Hide UI elements */
+                    body * {
+                        visibility: hidden;
+                    }
+                    /* Show only print area */
+                    #print-area, #print-area * {
+                        visibility: visible;
+                    }
+                    #print-area {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 210mm;
+                        height: 297mm;
+                        padding: 10mm !important;
+                        margin: 0 !important;
+                        background: white !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                    }
+                    .print-card-container {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 5mm !important;
+                        margin-bottom: 5mm !important;
+                        page-break-inside: avoid;
+                    }
+                    /* Standard ID Card Size: 85.6mm x 54mm */
+                    .print-image-slot {
+                        width: 85.6mm !important;git 
+                        height: 55mm !important;
+                        border: 0.1mm solid #000 !important;
                         -webkit-print-color-adjust: exact;
                     }
-                    @page { size: A4; margin: 0; }
+                    @page {
+                        size: A4;
+                        margin: 0;
+                    }
                 }
             `}</style>
 
-            <header className="text-center mb-8 print:hidden">
-                <h1 className="text-2xl font-extrabold text-blue-700 flex items-center justify-center gap-2">
-                    <Layout className="bg-blue-600 text-white p-1 rounded" /> Smart ID Print Tool
-                </h1>
-            </header>
-
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                {/* LEFT SIDE: CONTROLS */}
-                <div className="lg:col-span-5 space-y-4 print:hidden">
-                    <button onClick={addNewCard} className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md hover:bg-blue-700 transition">
-                        + Add New ID Card
-                    </button>
-
-                    <div className="bg-white rounded-xl shadow-sm border p-4 space-y-4">
-                        {cards.map((card, idx) => (
-                            <div key={card.id} className="border rounded-xl p-3 bg-slate-50">
-                                <div className="flex justify-between mb-2 items-center font-bold text-xs uppercase text-slate-500">
-                                    <span>CARD {idx + 1}</span>
-                                    <button onClick={() => setCards(cards.filter(c => c.id !== card.id))} className="text-red-500 hover:bg-red-50 p-1 rounded transition"><Trash2 size={14}/></button>
-                                </div>
-                                <div className="grid grid-cols-2 gap-2 mb-2">
-                                    {/* THUMBNAILS WITH ROUNDED CORNERS */}
-                                    <div className="aspect-[1.58/1] bg-white border rounded-lg overflow-hidden flex items-center justify-center">
-                                        {card.front ? <img src={card.front} style={getFilterStyle(card.frontFilters)} className="w-full h-full object-cover" /> : <ImageIcon size={14} className="text-slate-300" />}
-                                    </div>
-                                    <div className="aspect-[1.58/1] bg-white border rounded-lg overflow-hidden flex items-center justify-center">
-                                        {card.back ? <img src={card.back} style={getFilterStyle(card.backFilters)} className="w-full h-full object-cover" /> : <ImageIcon size={14} className="text-slate-300" />}
-                                    </div>
-                                </div>
-                                <button onClick={() => { setActiveCard(card); setIsModalOpen(true); }} className="w-full bg-blue-500 text-white text-xs py-2 rounded-lg font-bold hover:bg-blue-600 transition">
-                                    Edit Images & Adjust Filters
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => window.print()} className="bg-emerald-500 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition shadow-sm"><Printer size={18}/> Print</button>
-                        <button onClick={handleDownloadPDF} disabled={isGenerating} className="bg-blue-700 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-blue-800 transition disabled:bg-slate-400">
-                            <FileText size={18}/> {isGenerating ? "Processing..." : "Download PDF"}
-                        </button>
-                    </div>
-                    
-                    <button onClick={() => setCards([])} className="w-full text-slate-400 text-xs font-bold hover:text-red-500 transition flex items-center justify-center gap-1">
-                        <RotateCcw size={12} /> RESET WORKBOARD
-                    </button>
+            <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-700">
+                {/* Top Badge */}
+                <div className="flex justify-center mb-4 print:hidden">
+                    <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full shadow-sm">
+                        Smart CSC Tools
+                    </span>
                 </div>
 
-                {/* RIGHT SIDE: LIVE PREVIEW */}
-                <div className="lg:col-span-7 flex justify-center bg-slate-200 p-4 rounded-2xl border-4 border-white shadow-inner">
-                    <div id="print-area" className="bg-white shadow-2xl p-[10mm] origin-top" style={{ width: '210mm', minHeight: '297mm' }}>
-                        {cards.map((card) => (
-                            <div key={card.id} className="print-card flex gap-3 mb-6">
-                                {/* FRONT SLOT WITH ROUNDED CORNERS */}
-                                <div className="slot flex items-center justify-center overflow-hidden border border-slate-300 rounded-[3mm]">
-                                    {card.front && (
-                                        <div style={getFilterStyle(card.frontFilters)} className="w-full h-full">
-                                            <img src={card.front} className="w-full h-full object-fill" />
+                {/* Header Section */}
+                <header className="text-center mb-8 print:hidden">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="bg-blue-600 p-1 rounded shadow-lg">
+                            <Layout className="text-white w-6 h-6" />
+                        </div>
+                        <h1 className="text-2xl font-extrabold text-blue-700 tracking-tight">
+                            Multiple ID Cards Print Tool
+                        </h1>
+                    </div>
+                    <p className="text-xs text-slate-500 max-w-2xl mx-auto">
+                        Upload and print up to 5 ID cards on a single A4 page.
+                    </p>
+                </header>
+
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                    {/* LEFT COLUMN: Controls */}
+                    <div className="lg:col-span-5 space-y-6 print:hidden">
+                        <button
+                            onClick={addNewCard}
+                            disabled={cards.length >= 5}
+                            className={`w-full font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md ${cards.length >= 5 ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                }`}
+                        >
+                            <Plus size={18} strokeWidth={3} /> Add New ID Card
+                        </button>
+
+                        <section className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div className="p-4 border-b border-slate-100 flex items-center gap-2">
+                                <Layout size={16} className="text-blue-500" />
+                                <h2 className="font-bold text-sm">Your Cards ({cards.length}/5)</h2>
+                            </div>
+
+                            <div className="p-4 space-y-4 max-h-[400px] overflow-y-auto">
+                                {cards.map((card, index) => (
+                                    <div key={card.id} className="border border-slate-100 rounded-lg p-3 bg-slate-50/50">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="font-bold text-xs uppercase">Card {index + 1} ({card.type})</span>
+                                            <button onClick={() => removeCard(card.id)} className="text-red-500 p-1 hover:bg-red-50 rounded">
+                                                <Trash2 size={14} />
+                                            </button>
                                         </div>
-                                    )}
+                                        <div className="grid grid-cols-2 gap-3 mb-3">
+                                            <div className="aspect-[1.6/1] border-2 border-dashed border-slate-200 rounded flex items-center justify-center bg-white overflow-hidden">
+                                                {card.front ? <img src={card.front} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="text-slate-300" />}
+                                            </div>
+                                            <div className="aspect-[1.6/1] border-2 border-dashed border-slate-200 rounded flex items-center justify-center bg-white overflow-hidden">
+                                                {card.back ? <img src={card.back} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="text-slate-300" />}
+                                            </div>
+                                        </div>
+                                        <button onClick={() => openEditModal(card)} className="w-full bg-blue-500 text-white text-xs py-1.5 rounded flex items-center justify-center gap-1 font-semibold">
+                                            <Edit3 size={12} /> Edit / Upload Images
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={handlePrint}
+                                className="bg-emerald-500 cursor-pointer hover:bg-emerald-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors"
+                            >
+                                <Printer size={16} /> Print Now
+                            </button>
+                            <button
+                                onClick={handleDownloadPDF}
+                                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
+                                <FileText size={16} /> Download PDF
+                            </button>
+                        </div>
+
+                        <button onClick={resetAll} className="w-full bg-slate-500 hover:bg-slate-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm">
+                            <RotateCcw size={16} /> Reset All
+                        </button>
+                    </div>
+
+                    {/* RIGHT COLUMN: Preview & PRINT AREA */}
+                    <div className="lg:col-span-7">
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col">
+                            <div className="p-4 border-b border-slate-100 flex justify-between items-center print:hidden">
+                                <div className="flex items-center gap-2">
+                                    <Layout size={16} className="text-purple-500" />
+                                    <h2 className="font-bold text-sm text-slate-800">Live Print Preview</h2>
                                 </div>
-                                {/* BACK SLOT WITH ROUNDED CORNERS */}
-                                <div className="slot flex items-center justify-center overflow-hidden border border-slate-300 rounded-[3mm]">
-                                    {card.back && (
-                                        <div style={getFilterStyle(card.backFilters)} className="w-full h-full">
-                                            <img src={card.back} className="w-full h-full object-fill" />
-                                        </div>
-                                    )}
+                                <span className="text-[10px] font-mono text-slate-400 uppercase">A4 Page Layout</span>
+                            </div>
+
+                            {/* Print Container */}
+                            <div className="flex-1 p-5 bg-slate-100/50 flex items-start justify-center overflow-auto">
+                                <div
+                                    id="print-area"
+                                    className="bg-white shadow-2xl border border-dashed border-slate-400 origin-top"
+                                    style={{ width: '210mm', minHeight: '297mm', padding: '10mm' }}
+                                >
+                                    <div className="flex flex-col">
+                                        {cards.map((card) => (
+                                            <div
+                                                key={card.id}
+                                                className="print-card-container flex flex-row gap-6 mb-6"
+                                            >
+                                                {/* Front Slot */}
+                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+                                                    {card.front ? (
+                                                        <img src={card.front} className="w-full h-full object-fill" alt="Front" />
+                                                    ) : (
+                                                        <span className="text-xs text-slate-300 font-bold uppercase">
+                                                            Front Side
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* Back Slot */}
+                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+                                                    {card.back ? (
+                                                        <img src={card.back} className="w-full h-full object-fill" alt="Back" />
+                                                    ) : (
+                                                        <span className="text-xs text-slate-300 font-bold uppercase">
+                                                            Back Side
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        ))}
+                        </div>
                     </div>
                 </div>
             </div>
 
             <EditCardModal
-                isOpen={isModalOpen} 
-                cardData={activeCard} 
-                onClose={() => setIsModalOpen(false)} 
-                onSave={(updated) => {
-                    setCards(cards.map(c => c.id === updated.id ? updated : c));
-                    setIsModalOpen(false);
-                }} 
+                isOpen={isModalOpen}
+                cardData={activeCard}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSaveCard}
             />
-        </div>
+        </>
     );
 };
 

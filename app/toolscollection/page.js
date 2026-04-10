@@ -41,7 +41,7 @@ const tools = [
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/images_6.jpg", 
+        icon: "/img/images_6.jpg",
         badge: "Popular",
         url: "/imageCompressor"
     },
@@ -52,7 +52,7 @@ const tools = [
         category: "tools",
         bg: "from-indigo-50 to-blue-100",
         accent: "#4F46E5",
-        icon: "/img/Images_7.webp",
+        icon: "/img/images_7.jpeg",
         badge: "Popular",
         url: "/kbpdfresizer"
     },
@@ -63,7 +63,7 @@ const tools = [
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/Images_4.jpeg",
+        icon: "/img/images_4.jpeg",
         badge: "New",
         url: "/fileconverter"
     },
@@ -74,9 +74,20 @@ const tools = [
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/Images_3.jpeg",
+        icon: "/img/images_3.jpeg",
         badge: "New",
         url: "/fileconverter"
+    },
+    {
+        id: 7,
+        title: "BG Remove Tool",
+        description: "Easily remove background from your images in just one click. Fast, accurate and perfect for ID cards, product photos, thumbnails and more. No design skills required.",
+        category: "tools",
+        bg: "from-blue-50 to-indigo-100",
+        accent: "#4F46E5",
+        icon: "/img/images_3.jpeg",
+        badge: "New",
+        url: "/bg-remove"
     }
 ];
 
