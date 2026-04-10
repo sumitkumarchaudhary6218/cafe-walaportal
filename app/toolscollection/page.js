@@ -35,7 +35,7 @@ const tools = [
     },
 
     {
-        id: 4,
+        id: 3,
         title: "Image Compressor",
         description: "Compress images without losing quality.",
         category: "tools",
@@ -46,35 +46,35 @@ const tools = [
         url: "/imageCompressor"
     },
     {
-        id: 5,
+        id: 4,
         title: "PDF Compressor",
         description: "Reduce PDF file size easily.",
         category: "tools",
         bg: "from-indigo-50 to-blue-100",
         accent: "#4F46E5",
-        icon: "/img/images_7.jpeg",
+        icon: "/img/images_7.jpg",
         badge: "Popular",
         url: "/kbpdfresizer"
     },
     {
-        id: 6,
+        id: 5,
         title: "PDF to JPG",
         description: "Convert PDF pages into JPG images.",
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/images_4.jpeg",
+        icon: "/img/images_4.jpg",
         badge: "New",
         url: "/fileconverter"
     },
     {
-        id: 7,
+        id: 6,
         title: "JPG to PDF",
         description: "Convert JPG images into a single PDF file.",
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/images_3.jpeg",
+        icon: "/img/images_3.jpg",
         badge: "New",
         url: "/fileconverter"
     },
@@ -85,7 +85,7 @@ const tools = [
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/images_3.jpeg",
+        icon: "/img/images_7.jpeg",
         badge: "New",
         url: "/bg-remove"
     }
