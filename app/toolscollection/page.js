@@ -41,7 +41,7 @@ const tools = [
         category: "tools",
         bg: "from-blue-50 to-indigo-100",
         accent: "#4F46E5",
-        icon: "/img/images_6.jpg",
+        icon: "/img/images_9.jpeg",
         badge: "Popular",
         url: "/imageCompressor"
     },
@@ -79,16 +79,16 @@ const tools = [
         url: "/fileconverter"
     },
     {
-        id: 7,
-        title: "BG Remove Tool",
-        description: "Easily remove background from your images in just one click. Fast, accurate and perfect for ID cards, product photos, thumbnails and more. No design skills required.",
-        category: "tools",
-        bg: "from-blue-50 to-indigo-100",
-        accent: "#4F46E5",
-        icon: "/img/images_7.jpeg",
-        badge: "New",
-        url: "/bg-remove"
-    }
+    id: 7,
+    title: "Image Enhancer",
+    description: "Enhance your images instantly with AI-powered technology. Improve quality, sharpen blurry photos, increase resolution, and make your images HD in just one click. Fast, free, and easy to use—perfect for photos, documents, and social media.",
+    category: "tools",
+    bg: "from-blue-50 to-indigo-100",
+    accent: "#4F46E5",
+    icon: "/img/images_8.jpg",
+    badge: "New",
+    url: "/image-enhancer"
+}
 ];
 
 export default function ToolsCollection() {
