@@ -47,30 +47,32 @@ const IDCardPrintTool = () => {
 
     const handleDownloadPDF = async () => {
         const element = document.getElementById("print-area");
-
         if (!element) return;
-
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-        });
-
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
         const imgData = canvas.toDataURL("image/png");
-
         const pdf = new jsPDF("p", "mm", "a4");
-
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save("id-card.pdf");
     };
+
     return (
         <>
-            {/* CSS for Exact A4 Printing */}
+            {/* CSS for Exact A4 Printing - FIXED SIZE, NO SHADOW, NO SCROLL */}
             <style jsx global>{`
                 @media print {
-                    /* Hide UI elements */
+                    /* Hide UI elements and shadows */
+                    * {
+                        box-shadow: none !important;
+                        -webkit-print-color-adjust: exact;
+                    }
+                    body {
+                        background: white !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        overflow: hidden !important; /* Removes scrollbar */
+                    }
                     body * {
                         visibility: hidden;
                     }
@@ -82,27 +84,29 @@ const IDCardPrintTool = () => {
                         position: absolute;
                         left: 0;
                         top: 0;
-                        width: 210mm;
-                        height: 297mm;
+                        width: 210mm !important;
+                        height: 297mm !important;
                         padding: 10mm !important;
                         margin: 0 !important;
                         background: white !important;
-                        box-shadow: none !important;
                         border: none !important;
+                        overflow: hidden !important; /* Extra check for scrollbar */
                     }
                     .print-card-container {
                         display: flex !important;
                         flex-direction: row !important;
-                        gap: 5mm !important;
+                        justify-content: center !important;
+                        gap: 9mm !important;
                         margin-bottom: 5mm !important;
                         page-break-inside: avoid;
                     }
-                    /* Standard ID Card Size: 85.6mm x 54mm */
+                    /* INCREASED CARD SIZE: 95mm x 62mm */
                     .print-image-slot {
-                        width: 85.6mm !important;git 
-                        height: 55mm !important;
-                        border: 0.1mm solid #000 !important;
-                        -webkit-print-color-adjust: exact;
+                        width: 98mm !important;
+                        height: 62mm !important;
+                        border: 0.2mm solid #000 !important;
+                        box-sizing: border-box !important;
+                        background: white !important;
                     }
                     @page {
                         size: A4;
@@ -130,19 +134,17 @@ const IDCardPrintTool = () => {
                         </h1>
                     </div>
                     <p className="text-xs text-slate-500 max-w-2xl mx-auto">
-                        Upload and print up to 5 ID cards on a single A4 page.
+                        Standard Size: 95mm x 62mm
                     </p>
                 </header>
 
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                    {/* LEFT COLUMN: Controls */}
+                    {/* LEFT COLUMN: Dashboard Controls (The Old UI) */}
                     <div className="lg:col-span-5 space-y-6 print:hidden">
                         <button
                             onClick={addNewCard}
-                            disabled={cards.length >= 5}
-                            className={`w-full font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md ${cards.length >= 5 ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
-                                }`}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-md"
                         >
                             <Plus size={18} strokeWidth={3} /> Add New ID Card
                         </button>
@@ -157,7 +159,7 @@ const IDCardPrintTool = () => {
                                 {cards.map((card, index) => (
                                     <div key={card.id} className="border border-slate-100 rounded-lg p-3 bg-slate-50/50">
                                         <div className="flex justify-between items-center mb-2">
-                                            <span className="font-bold text-xs uppercase">Card {index + 1} ({card.type})</span>
+                                            <span className="font-bold text-xs uppercase">Card {index + 1}</span>
                                             <button onClick={() => removeCard(card.id)} className="text-red-500 p-1 hover:bg-red-50 rounded">
                                                 <Trash2 size={14} />
                                             </button>
@@ -179,15 +181,10 @@ const IDCardPrintTool = () => {
                         </section>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <button
-                                onClick={handlePrint}
-                                className="bg-emerald-500 cursor-pointer hover:bg-emerald-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors"
-                            >
+                            <button onClick={handlePrint} className="bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors">
                                 <Printer size={16} /> Print Now
                             </button>
-                            <button
-                                onClick={handleDownloadPDF}
-                                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
+                            <button onClick={handleDownloadPDF} className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm">
                                 <FileText size={16} /> Download PDF
                             </button>
                         </div>
@@ -197,7 +194,7 @@ const IDCardPrintTool = () => {
                         </button>
                     </div>
 
-                    {/* RIGHT COLUMN: Preview & PRINT AREA */}
+                    {/* RIGHT COLUMN: Preview & PRINT AREA (The Old UI) */}
                     <div className="lg:col-span-7">
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col">
                             <div className="p-4 border-b border-slate-100 flex justify-between items-center print:hidden">
@@ -208,38 +205,34 @@ const IDCardPrintTool = () => {
                                 <span className="text-[10px] font-mono text-slate-400 uppercase">A4 Page Layout</span>
                             </div>
 
-                            {/* Print Container */}
-                            <div className="flex-1 p-5 bg-slate-100/50 flex items-start justify-center overflow-auto">
+                            {/* Print Preview Container */}
+                            <div className="flex-1 p-5 bg-slate-100/50 flex items-start justify-center overflow-auto scrollbar-hide">
                                 <div
                                     id="print-area"
-                                    className="bg-white shadow-2xl border border-dashed border-slate-400 origin-top"
+                                    className="bg-white shadow-2xl border border-dashed border-slate-400 origin-top overflow-hidden"
                                     style={{ width: '210mm', minHeight: '297mm', padding: '10mm' }}
                                 >
-                                    <div className="flex flex-col">
+                                    <div className="flex flex-col items-center">
                                         {cards.map((card) => (
                                             <div
                                                 key={card.id}
-                                                className="print-card-container flex flex-row gap-6 mb-6"
+                                                className="print-card-container flex flex-row gap-[5mm] mb-[5mm]"
                                             >
-                                                {/* Front Slot */}
-                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+                                                {/* Left Side Slot (95x62mm) */}
+                                                <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
                                                     {card.front ? (
                                                         <img src={card.front} className="w-full h-full object-fill" alt="Front" />
                                                     ) : (
-                                                        <span className="text-xs text-slate-300 font-bold uppercase">
-                                                            Front Side
-                                                        </span>
+                                                        <span className="text-[10px] text-slate-300 font-bold uppercase">Front Side</span>
                                                     )}
                                                 </div>
 
-                                                {/* Back Slot */}
-                                                <div className="print-image-slot w-[260px] h-[160px] bg-white border border-slate-300 flex items-center justify-center overflow-hidden rounded-lg">
+                                                {/* Right Side Slot (95x62mm) */}
+                                                <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
                                                     {card.back ? (
                                                         <img src={card.back} className="w-full h-full object-fill" alt="Back" />
                                                     ) : (
-                                                        <span className="text-xs text-slate-300 font-bold uppercase">
-                                                            Back Side
-                                                        </span>
+                                                        <span className="text-[10px] text-slate-300 font-bold uppercase">Back Side</span>
                                                     )}
                                                 </div>
                                             </div>
