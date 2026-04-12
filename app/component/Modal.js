@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
+
 const tools = [
   {
     icon: (
@@ -77,16 +78,8 @@ const Modal = () => {
   const [hoveredTool, setHoveredTool] = useState(null);
 
   useEffect(() => {
-    // Modal ko 600ms baad show karo
-    const openTimer = setTimeout(() => setIsModalOpen(true), 600);
-    
-    // Phir 4 seconds baad automatically close karo
-    const closeTimer = setTimeout(() => setIsModalOpen(false), 4600);
-    
-    return () => {
-      clearTimeout(openTimer);
-      clearTimeout(closeTimer);
-    };
+    const timer = setTimeout(() => setIsModalOpen(true), 600);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -636,10 +629,6 @@ const Modal = () => {
             <div
               key={t.label}
               className="dtb-tool"
-              onClick={() => {
-                setIsModalOpen(false);
-                router.push("/toolscollection");
-              }}
               onMouseEnter={() => setHoveredTool(t.label)}
               onMouseLeave={() => setHoveredTool(null)}
             >

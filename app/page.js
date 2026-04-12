@@ -6,6 +6,7 @@ import Marquee from "./component/Marquee";
 import Loader from "./component/Loader";
 import AlertBanner from "./component/DigitalToolsBox";
 import DigitalToolsBox from "./component/DigitalToolsBox";
+import Modal from "./component/Modal";
 
 const gridLinks = [
  
@@ -190,7 +191,8 @@ export default function OnlineUpdateSTM() {
          
 
         <DisclaimerPage />
-         <DigitalToolsBox show={true} />
+        <Modal/>
+         {/* <DigitalToolsBox show={true} /> */}
         <Disclaimer />
       </div>
       {loading && <Loader />}
