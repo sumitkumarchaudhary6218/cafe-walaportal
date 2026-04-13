@@ -5,7 +5,6 @@ import {
     RotateCcw, Layout, Image as ImageIcon
 } from 'lucide-react';
 import EditCardModal from './components/EditCardModal';
-import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const IDCardPrintTool = () => {
@@ -45,24 +44,74 @@ const IDCardPrintTool = () => {
         window.print();
     };
 
+    // FIXED PDF FUNCTION USING DOM-TO-IMAGE-MORE
     const handleDownloadPDF = async () => {
-        const element = document.getElementById("print-area");
+        const element = document.getElementById('print-area');
         if (!element) return;
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save("id-card.pdf");
+
+        try {
+            const domtoimage = (await import('dom-to-image-more')).default;
+            const { jsPDF } = await import('jspdf');
+
+            // ✅ 1. Clone element
+            const clone = element.cloneNode(true);
+
+            // ✅ 2. Remove all borders / shadows from ALL elements
+            const all = clone.querySelectorAll("*");
+            all.forEach((node) => {
+                node.style.border = "none";
+                node.style.outline = "none";
+                node.style.boxShadow = "none";
+            });
+
+            // ✅ 3. Remove unwanted classes (Tailwind / MUI)
+            clone.classList.remove("border", "border-gray-300");
+
+            // ✅ 4. Fix layout + scaling
+            clone.style.transform = "scale(2)";
+            clone.style.transformOrigin = "top left";
+            clone.style.width = element.offsetWidth + "px";
+            clone.style.height = element.offsetHeight + "px";
+            clone.style.overflow = "hidden";
+            clone.style.background = "#fff";
+
+            // ✅ 5. Invisible mount (important)
+            clone.style.position = "fixed";
+            clone.style.top = "-9999px";
+            document.body.appendChild(clone);
+
+            // ✅ 6. Generate image
+            const dataUrl = await domtoimage.toPng(clone, {
+                width: element.offsetWidth * 2,
+                height: element.offsetHeight * 2,
+                bgcolor: "#ffffff",
+
+                filter: (node) => {
+                    if (node.classList && node.classList.contains('no-pdf')) {
+                        return false;
+                    }
+                    return true;
+                }
+            });
+
+            // ✅ 7. Remove clone
+            document.body.removeChild(clone);
+
+            // ✅ 8. Create PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            pdf.addImage(dataUrl, 'PNG', 0, 0, 210, 297);
+            pdf.save(`ID_Cards_${Date.now()}.pdf`);
+
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+        }
     };
 
     return (
         <>
-            {/* CSS for Exact A4 Printing - FIXED SIZE, NO SHADOW, NO SCROLL */}
+            {/* CSS for Exact A4 Printing */}
             <style jsx global>{`
                 @media print {
-                    /* Hide UI elements and shadows */
                     * {
                         box-shadow: none !important;
                         -webkit-print-color-adjust: exact;
@@ -71,12 +120,11 @@ const IDCardPrintTool = () => {
                         background: white !important;
                         margin: 0 !important;
                         padding: 0 !important;
-                        overflow: hidden !important; /* Removes scrollbar */
+                        overflow: hidden !important;
                     }
                     body * {
                         visibility: hidden;
                     }
-                    /* Show only print area */
                     #print-area, #print-area * {
                         visibility: visible;
                     }
@@ -90,7 +138,6 @@ const IDCardPrintTool = () => {
                         margin: 0 !important;
                         background: white !important;
                         border: none !important;
-                        overflow: hidden !important; /* Extra check for scrollbar */
                     }
                     .print-card-container {
                         display: flex !important;
@@ -100,13 +147,13 @@ const IDCardPrintTool = () => {
                         margin-bottom: 5mm !important;
                         page-break-inside: avoid;
                     }
-                    /* INCREASED CARD SIZE: 95mm x 62mm */
                     .print-image-slot {
                         width: 98mm !important;
                         height: 62mm !important;
-                        border: 0.2mm solid #000 !important;
+                       
                         box-sizing: border-box !important;
                         background: white !important;
+                         border-radius: 9px !important;
                     }
                     @page {
                         size: A4;
@@ -140,7 +187,7 @@ const IDCardPrintTool = () => {
 
                 <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                    {/* LEFT COLUMN: Dashboard Controls (The Old UI) */}
+                    {/* LEFT COLUMN: Controls */}
                     <div className="lg:col-span-5 space-y-6 print:hidden">
                         <button
                             onClick={addNewCard}
@@ -149,7 +196,7 @@ const IDCardPrintTool = () => {
                             <Plus size={18} strokeWidth={3} /> Add New ID Card
                         </button>
 
-                        <section className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <section className="bg-white rounded-xl shadow-sm   overflow-hidden">
                             <div className="p-4 border-b border-slate-100 flex items-center gap-2">
                                 <Layout size={16} className="text-blue-500" />
                                 <h2 className="font-bold text-sm">Your Cards ({cards.length}/5)</h2>
@@ -194,7 +241,7 @@ const IDCardPrintTool = () => {
                         </button>
                     </div>
 
-                    {/* RIGHT COLUMN: Preview & PRINT AREA (The Old UI) */}
+                    {/* RIGHT COLUMN: Preview & PRINT AREA */}
                     <div className="lg:col-span-7">
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col">
                             <div className="p-4 border-b border-slate-100 flex justify-between items-center print:hidden">
@@ -205,7 +252,6 @@ const IDCardPrintTool = () => {
                                 <span className="text-[10px] font-mono text-slate-400 uppercase">A4 Page Layout</span>
                             </div>
 
-                            {/* Print Preview Container */}
                             <div className="flex-1 p-5 bg-slate-100/50 flex items-start justify-center overflow-auto scrollbar-hide">
                                 <div
                                     id="print-area"
@@ -218,7 +264,6 @@ const IDCardPrintTool = () => {
                                                 key={card.id}
                                                 className="print-card-container flex flex-row gap-[5mm] mb-[5mm]"
                                             >
-                                                {/* Left Side Slot (95x62mm) */}
                                                 <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
                                                     {card.front ? (
                                                         <img src={card.front} className="w-full h-full object-fill" alt="Front" />
@@ -227,7 +272,6 @@ const IDCardPrintTool = () => {
                                                     )}
                                                 </div>
 
-                                                {/* Right Side Slot (95x62mm) */}
                                                 <div className="print-image-slot bg-white border border-slate-300 flex items-center justify-center overflow-hidden">
                                                     {card.back ? (
                                                         <img src={card.back} className="w-full h-full object-fill" alt="Back" />
