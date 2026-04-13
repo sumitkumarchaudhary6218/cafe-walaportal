@@ -1,205 +1,254 @@
-import React from 'react';
-import { 
-  Key, 
-  User, 
-  ShieldCheck, 
-  LogIn, 
-  HelpCircle, 
-  AlertTriangle, 
-  Lightbulb, 
-  CheckCircle2, 
-  RefreshCcw,
-  ArrowRight,
-  ListChecks,
-  Lock,
-  Smartphone,
-  Check
-} from 'lucide-react';
+"use client";
+
+import React from "react";
 
 export default function LMSGuide() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
-      
-      {/* --- Sticky Header --- */}
-      <header className="bg-white border-b sticky top-0 z-50 p-4 shadow-sm">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Key className="text-violet-600 w-6 h-6" />
-            <span className="font-black text-lg">LMS ID Password Guide</span>
-          </div>
-          <div className="bg-violet-100 text-violet-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">
-            TEC Portal Access
-          </div>
+    <div className="min-h-screen  py-6 px-4">
+      <div className="max-w-4xl mx-auto  rounded-2xl p-6 md:p-10">
+
+        {/* Title */}
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-4">
+          🪪 LMS ID Password क्या है? | Aadhaar Center के लिए LMS Registration पूरी जानकारी
+        </h1>
+
+        <p className="text-gray-700 mb-4">
+          दोस्तों अगर आप एक साइबर कैफे चलाते हैं या फिर आधार सेंटर लेना चाहते हैं, तो आपने जरूर सुना होगा:
+        </p>
+
+        <ul className="list-disc ml-6 mb-4 space-y-1">
+          <li>👉 LMS ID Password क्या होता है?</li>
+          <li>👉 यह क्यों जरूरी होता है?</li>
+          <li>👉 इसे कैसे लिया जाता है?</li>
+        </ul>
+
+        <p className="text-gray-700 mb-6">
+          तो दोस्तों आज के इस आर्टिकल में हम लोग पूरी डिटेल में समझेंगे कि LMS ID क्या है और यह आधार सेंटर में कैसे काम आता है।
+        </p>
+
+        {/* Section */}
+        <Section title="🔥 LMS ID क्या होता है?">
+
+          <p>👉 LMS का फुल फॉर्म होता है:</p>
+
+          <p className="mt-2 font-semibold">
+            Learning Management System
+          </p>
+
+          <p className="mt-3">
+            👉 यह एक प्रकार का E-Learning प्लेटफॉर्म होता है, जहाँ पर:
+          </p>
+
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>आपको आधार (Aadhaar) से जुड़ी ट्रेनिंग दी जाती है</li>
+            <li>काम करने का तरीका सिखाया जाता है</li>
+            <li>पूरा स्टडी मटेरियल दिया जाता है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 यानी: आधार सेंटर चलाने से पहले आपको ट्रेनिंग दी जाती है
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="📌 LMS ID Password की जरूरत क्यों होती है?">
+
+          <p>👉 दोस्तों, LMS ID बहुत ही जरूरी होता है क्योंकि:</p>
+
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>आधार सेंटर लेने के लिए ट्रेनिंग अनिवार्य है</li>
+            <li>बिना LMS के आप आगे की प्रक्रिया नहीं कर सकते</li>
+            <li>NSEIT Exam देने के लिए LMS ID जरूरी होता है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 यानी: LMS = Aadhaar Center की पहली सीढ़ी
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="📚 LMS Portal पर क्या-क्या करना होता है?">
+
+          <p>जब आपको LMS ID मिल जाता है, तो आपको:</p>
+
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>✅ Study Material पढ़ना होता है</li>
+            <li>✅ Video Training देखनी होती है</li>
+            <li>✅ Practice करना होता है</li>
+            <li>✅ Online Exam देना होता है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 यह सब करने के बाद आप आगे बढ़ते हैं
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="🧾 LMS Exam कैसे होता है?">
+
+          <p>👉 LMS Portal पर:</p>
+
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            <li>आपको Online Exam देना होता है</li>
+            <li>इसमें आधार से जुड़े सवाल आते हैं</li>
+          </ul>
+
+          <p className="mt-2">जैसे:</p>
+
+          <ul className="list-disc ml-6">
+            <li>Enrollment Process</li>
+            <li>Update Process</li>
+            <li>Document Verification</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 अगर आप अच्छे से पढ़ते हैं, तो: 👉 Exam आसानी से पास हो जाता है
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="🎓 LMS Certificate कैसे मिलता है?">
+
+          <p>👉 Exam पास करने के बाद:</p>
+
+          <ul className="list-disc ml-6 mt-2">
+            <li>आपको LMS Certificate मिलता है</li>
+            <li>साथ में Login ID और Password मिलता है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 यह Certificate बहुत जरूरी होता है
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="🚀 आगे क्या करना होता है?">
+
+          <p>👉 LMS Certificate मिलने के बाद:</p>
+
+          <ul className="list-disc ml-6 mt-2">
+            <li>आपको NSEIT Exam के लिए apply करना होता है</li>
+            <li>वहाँ LMS ID और Certificate upload करना पड़ता है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 इसके बाद ही: 👉 आप Aadhaar Center की तरफ आगे बढ़ सकते हैं
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="⚡ LMS ID कैसे लें?">
+
+          <p>👉 LMS ID लेने के लिए:</p>
+
+          <ul className="list-disc ml-6 mt-2">
+            <li>आपको Aadhaar (UIDAI) के official portal पर जाना होता है</li>
+            <li>Registration करना होता है</li>
+            <li>Basic details भरनी होती है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 कुछ मामलों में:
+          </p>
+
+          <p className="mt-2">
+            CSC या संबंधित अधिकारी की मदद भी लेनी पड़ती है
+          </p>
+
+        </Section>
+
+        {/* Section */}
+        <Section title="💡 आसान भाषा में समझें">
+
+          <ul className="list-disc ml-6 space-y-1">
+            <li>👉 LMS ID = Training + Exam + Certificate</li>
+            <li>👉 बिना LMS के: ❌ आप Aadhaar Center की प्रक्रिया पूरी नहीं कर सकते</li>
+            <li>👉 इसलिए: यह सबसे जरूरी step होता है</li>
+          </ul>
+
+        </Section>
+
+        {/* Conclusion */}
+        <div className="mt-8 bg-blue-50 p-5 rounded-xl border">
+          <h3 className="text-lg font-semibold mb-3">🎯 निष्कर्ष (Conclusion)</h3>
+
+          <p>
+            दोस्तों, अगर आप Aadhaar Center लेना चाहते हैं, तो:
+          </p>
+
+          <p className="mt-2">
+            👉 LMS ID लेना बहुत जरूरी है
+          </p>
+
+          <p className="mt-2">
+            क्योंकि:
+          </p>
+
+          <ul className="list-disc ml-6">
+            <li>यह आपको ट्रेनिंग देता है</li>
+            <li>आपको योग्य बनाता है</li>
+            <li>और आगे के process (NSEIT) के लिए जरूरी है</li>
+          </ul>
+
+          <p className="mt-3">
+            👉 इसलिए LMS को हल्के में न लें
+          </p>
+
+          <p className="mt-2">
+            👉 अच्छे से पढ़ें और exam पास करें
+          </p>
+
         </div>
-      </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-8">
-        
-        {/* --- Hero Section --- */}
-        <section className="mb-12">
-          <h1 className="text-3xl md:text-5xl font-black leading-tight mb-8 text-slate-900">
-            LMS ID Password <span className="text-violet-600 underline decoration-indigo-200">कैसे लें</span> – Full Guide
-          </h1>
-          
-          <div className="bg-violet-600 text-white p-8 rounded-[2.5rem] shadow-xl mb-10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-10"><ShieldCheck size={120} /></div>
-            <p className="text-lg font-medium leading-relaxed relative z-10 italic">
-              "LMS ID और Password TEC (Telecentre Entrepreneur Course) portal में login करने के लिए जरूरी होते हैं। इस guide में जानें registration के बाद LMS ID कैसे मिलता है, password कैसे बनाएं और login कैसे करें – पूरी जानकारी आसान भाषा में।"
-            </p>
-          </div>
+        {/* Final Tip */}
+        <div className="mt-6 bg-yellow-50 p-5 rounded-xl border">
+          <h3 className="text-lg font-semibold mb-2">📢 Final Tip</h3>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-               <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-violet-700">
-                 🚀 LMS ID क्या होता है?
-               </h2>
-               <p className="text-sm font-medium text-slate-600 mb-4">LMS (Learning Management System) ID एक login ID होता है जिससे आप TEC course portal में login करते हैं।</p>
-               <ul className="space-y-2 text-xs font-bold text-slate-500">
-                 <li className="flex items-center gap-2"><Check size={14} className="text-violet-500"/> Course modules देख सकते हैं</li>
-                 <li className="flex items-center gap-2"><Check size={14} className="text-violet-500"/> Tests दे सकते हैं</li>
-                 <li className="flex items-center gap-2"><Check size={14} className="text-violet-500"/> Certificate download कर सकते हैं</li>
-               </ul>
-            </div>
+          <p>👉 अगर आप सच में Aadhaar Center लेना चाहते हैं:</p>
 
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-               <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-violet-700">
-                 🔑 LMS Password क्या है?
-               </h2>
-               <p className="text-sm font-medium text-slate-600 mb-4">Password वह secret key है जिससे आप अपनी LMS ID को सुरक्षित रखते हैं।</p>
-               <div className="bg-violet-50 p-3 rounded-xl border border-violet-100 flex items-center gap-2 text-sm font-black text-violet-800">
-                 <Lock size={16}/> ID + Password = Dashboard Access
-               </div>
-            </div>
-          </div>
-        </section>
+          <ul className="list-disc ml-6 mt-2">
+            <li>LMS को seriously लें</li>
+            <li>पूरा study करें</li>
+            <li>exam clear करें</li>
+          </ul>
 
-        {/* --- Step-by-Step Guide --- */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-black mb-8 flex items-center gap-2">
-            <ListChecks className="text-violet-600" /> 🧾 LMS ID Password कैसे लें (Step-by-Step)
-          </h2>
-          
-          <div className="space-y-6">
-            {[
-              { title: "TEC Registration करें", desc: "TEC portal पर जाकर अपना नाम, मोबाइल और Email के साथ New Registration करें।" },
-              { title: "Fees Payment करें", desc: "₹1479 (approx) online pay करें। इसके बिना account activate नहीं होता।" },
-              { title: "LMS ID प्राप्त करें", desc: "Payment के बाद LMS ID screen पर दिखेगा या Email/SMS में आएगा।" },
-              { title: "Password सेट करें", desc: "Registration के समय बनाएं या 'Forgot Password' से नया सेट करें।" },
-              { title: "Login करें", desc: "Portal पर जाकर ID और Password डालें, आपका Dashboard खुल जाएगा।" }
-            ].map((step, idx) => (
-              <div key={idx} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                   <div className="w-8 h-8 rounded-full bg-violet-600 text-white flex items-center justify-center font-black text-sm z-10 flex-shrink-0">
-                     {idx + 1}
-                   </div>
-                   {idx < 4 && <div className="w-0.5 h-full bg-slate-200 -mt-1"></div>}
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm w-full mb-4">
-                  <h3 className="font-black text-slate-800 mb-1">🔹 Step {idx + 1}: {step.title}</h3>
-                  <p className="text-sm text-slate-500 font-medium leading-relaxed">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+          <p className="mt-3">
+            👉 तभी आप आगे बढ़ पाएंगे
+          </p>
 
-        {/* --- Forgot Password Section --- */}
-        <section className="mb-12 bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 relative">
-          <h2 className="text-xl font-black mb-6 flex items-center gap-2">
-            <RefreshCcw className="text-indigo-600" /> 🔄 अगर ID या Password भूल जाएं?
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-indigo-50">
-               <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600 font-bold text-xs">STEP 1</span>
-               <p className="text-sm font-bold">“Forgot Password” पर क्लिक करें</p>
-            </div>
-            <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-indigo-50">
-               <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600 font-bold text-xs">STEP 2</span>
-               <p className="text-sm font-bold flex items-center gap-2"><Smartphone size={14}/> Registered mobile/email डालें</p>
-            </div>
-            <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-indigo-50">
-               <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600 font-bold text-xs">STEP 3</span>
-               <p className="text-sm font-bold">OTP verify करके नया password सेट करें</p>
-            </div>
-          </div>
-        </section>
+        </div>
 
-        {/* --- Troubleshooting Section --- */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-black mb-6 flex items-center gap-2 text-rose-700">
-            <AlertTriangle className="text-rose-500" /> ⚠️ Common Problems & Solution
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { prob: "LMS ID नहीं मिला?", sol: "Email/SMS और Spam folder check करें।" },
-              { prob: "Login नहीं हो रहा?", sol: "Caps Lock check करें और सही ID डालें।" },
-              { prob: "Password भूल गए?", sol: "Forgot Password option से reset करें।" }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-white p-5 rounded-3xl border-2 border-rose-50 shadow-sm">
-                <p className="text-xs font-black text-rose-500 uppercase tracking-widest mb-2">Problem</p>
-                <h4 className="font-bold text-slate-800 mb-4">❌ {item.prob}</h4>
-                <div className="pt-4 border-t border-slate-50">
-                   <p className="text-xs font-black text-emerald-500 uppercase tracking-widest mb-1">Solution</p>
-                   <p className="text-sm font-medium text-slate-500">✔ {item.sol}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Disclaimer */}
+        <div className="mt-6 bg-gray-50 p-5 rounded-xl border">
+          <h3 className="text-lg font-semibold mb-2">⚠️ Disclaimer</h3>
 
-        {/* --- Tips & Importance --- */}
-        <section className="mb-12 grid md:grid-cols-2 gap-8">
-           <div className="bg-amber-50 border-2 border-dashed border-amber-300 p-6 rounded-[2.5rem]">
-              <h3 className="font-black text-amber-900 mb-4 flex items-center gap-2 text-lg">
-                <Lightbulb className="text-amber-500 fill-amber-200" /> 🔑 Important Tips
-              </h3>
-              <ul className="space-y-3 text-sm font-bold text-amber-800">
-                <li className="flex gap-2">✔️ <span>LMS ID सुरक्षित रखें</span></li>
-                <li className="flex gap-2">✔️ <span>Password शेयर न करें</span></li>
-                <li className="flex gap-2">✔️ <span>Login details कहीं लिखकर रखें</span></li>
-              </ul>
-           </div>
+          <p className="text-sm leading-relaxed">
+            यह जानकारी केवल सामान्य मार्गदर्शन के लिए है। LMS registration, exam और प्रक्रिया समय-समय पर बदल सकती है। कृपया आधिकारिक पोर्टल या संबंधित विभाग से जानकारी की पुष्टि अवश्य करें।
+          </p>
 
-           <div className="bg-slate-900 text-white p-6 rounded-[2.5rem] shadow-xl">
-              <h3 className="font-black text-violet-400 mb-4 flex items-center gap-2 text-lg">
-                <HelpCircle size={18} /> LMS ID क्यों जरूरी है?
-              </h3>
-              <div className="space-y-3 text-sm font-bold">
-                <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
-                   <ArrowRight size={14} className="text-violet-400" /> TEC course access करने के लिए
-                </div>
-                <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
-                   <ArrowRight size={14} className="text-violet-400" /> Final Exam देने के लिए
-                </div>
-                <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
-                   <ArrowRight size={14} className="text-violet-400" /> Certificate download करने के लिए
-                </div>
-              </div>
-           </div>
-        </section>
+        </div>
 
-        {/* --- Summary & CTA --- */}
-        <footer className="mt-20">
-           <div className="bg-white rounded-[3rem] p-8 border border-slate-200 shadow-sm text-center">
-             <h2 className="text-2xl font-black mb-6 underline decoration-violet-200 underline-offset-8">
-               📌 Quick Summary
-             </h2>
-             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 text-left">
-                {["LMS ID = Username", "Password = Key", "Set after Reg.", "Can be Reset"].map((txt, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-500">
-                    <CheckCircle2 className="text-violet-500" size={14}/> {txt}
-                  </div>
-                ))}
-             </div>
+      </div>
+    </div>
+  );
+}
 
-             <div className="bg-violet-600 text-white px-8 py-5 rounded-full font-black text-lg shadow-xl shadow-violet-200 hover:bg-violet-700 transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-3 mx-auto max-w-sm group">
-               अभी Register करें <LogIn className="group-hover:translate-x-1 transition-transform" />
-             </div>
-             <p className="mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest">TEC portal Dashboard Access Guide</p>
-           </div>
-        </footer>
-
-      </main>
+/* Section */
+function Section({ title, children }) {
+  return (
+    <div className="mb-8">
+      <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">
+        {title}
+      </h3>
+      <div className="text-gray-700 leading-relaxed space-y-2">
+        {children}
+      </div>
     </div>
   );
 }

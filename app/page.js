@@ -191,8 +191,8 @@ export default function OnlineUpdateSTM() {
          
 
         <DisclaimerPage />
-        <Modal/>
-         {/* <DigitalToolsBox show={true} /> */}
+      
+         <DigitalToolsBox show={true} />
         <Disclaimer />
       </div>
       {loading && <Loader />}

@@ -586,7 +586,7 @@ const Modal = () => {
               Hamare naye Digital Tools section mein aapka swagat hai. Ab PAN resize aur Photo compress karna hua aur bhi asaan.
             </p>
             <button className="modal-btn" onClick={() => router.push("/toolscollection")}>
-              Let's Start Exploring
+              Tools
             </button>
           </div>
         </div>
