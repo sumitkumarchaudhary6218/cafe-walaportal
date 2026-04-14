@@ -6,18 +6,18 @@ import { useRouter } from "next/navigation";
 // --- DATA ARRAYS ---
 const latestUpdates = [
   { id: 1, text: "📢 PAN Users Alert 🚨 | 1 April 2026 se New Rule लागू 😱 Aadhaar Ab DOB Proof Nahi ❌ PAN Reject Pakka!", url: "/panAlert" },
-  { id: 2, text: "PAN Card Apply Process Changed 2026 ⚠️ अब ऐसे बनेगा पैन कार्ड", url: "#" },
-  { id: 3, text: "अब ऐसे होगा Aadhaar Mobile Link 2026 | New Process Update 🔥", url: "#" },
-  { id: 4, text: "ड्राइविंग लाइसेंस Apply 2026 कैसे करें", url: "#" },
-  { id: 5, text: "आयुष्मान कार्ड Apply Online 2026 कैसे करें", url: "#" },
-  { id: 6, text: "Top 5 सरकारी Loan योजना कौन-कौन सी हैं", url: "#" },
-  { id: 7, text: "CSC Center कैसे खोलें 2026 में पूरी जानकारी", url: "#" },
-  { id: 8, text: "E-Shram Card कैसे बनाएं 2026 में", url: "#" },
-  { id: 9, text: "Voter Card कैसे बनाएं 2026 में", url: "#" },
-  { id: 10, text: "आधार कार्ड में मोबाइल नंबर लिंक कैसे करें", url: "#" },
-  { id: 11, text: "TEC Certificate कैसे बनाएं 2026 में", url: "#" },
-  { id: 12, text: "Aadhaar Seeding Online 2026 कैसे करें", url: "#" },
-  { id: 13, text: "PAN Card Apply कैसे करें", url: "#" },
+  { id: 2, text: "PAN Card Apply Process Changed 2026 ⚠️ अब ऐसे बनेगा पैन कार्ड", url: "/pan-card-update" },
+  { id: 3, text: "अब ऐसे होगा Aadhaar Mobile Link 2026 | New Process Update 🔥", url: "/aadhaar-mobile-link" },
+  { id: 4, text: "ड्राइविंग लाइसेंस Apply 2026 कैसे करें", url: "/driving-license" },
+  { id: 5, text: "आयुष्मान कार्ड Apply Online 2026 कैसे करें", url: "/ayushman-card" },
+  // { id: 6, text: "Top 5 सरकारी Loan योजना कौन-कौन सी हैं", url: "/top-loan-yojana" },
+  // { id: 7, text: "CSC Center कैसे खोलें 2026 में पूरी जानकारी", url: "#" },
+  // { id: 8, text: "E-Shram Card कैसे बनाएं 2026 में", url: "#" },
+  // { id: 9, text: "Voter Card कैसे बनाएं 2026 में", url: "#" },
+  // { id: 10, text: "आधार कार्ड में मोबाइल नंबर लिंक कैसे करें", url: "#" },
+  // { id: 11, text: "TEC Certificate कैसे बनाएं 2026 में", url: "#" },
+  // { id: 12, text: "Aadhaar Seeding Online 2026 कैसे करें", url: "#" },
+  // { id: 13, text: "PAN Card Apply कैसे करें", url: "#" },
 ];
 
 const latestDownloads = [
