@@ -75,7 +75,8 @@ export default function RootLayout({ children }) {
         <WrapperLayout>
           <main>{children}</main>
         </WrapperLayout>
-
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3242565444207664"
+     crossorigin="anonymous"></script>
       </body>
     </html>
   );
